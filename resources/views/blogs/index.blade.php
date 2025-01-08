@@ -44,8 +44,7 @@
                     <div class="card h-100 shadow-sm">
                         <!-- Image de couverture -->
                         @if ($blog->FeaturedImage)
-                            <img src="{{ asset('storage/' . $blog->FeaturedImage) }}" class="card-img-top" alt="Image de couverture" style="height: 200px; object-fit: cover;">
-                        @else
+                        <img src="{{ asset('storage/' . $blog->FeaturedImage) }}" alt="Image mise en avant" class="blog-image img-fluid">                        @else
                             <div class="text-center py-5 bg-light">
                                 <i class="fas fa-image fa-3x text-muted"></i>
                                 <p class="mt-2 text-muted">Aucune image</p>
