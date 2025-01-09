@@ -1,5 +1,5 @@
-<!-- resources/views/auth/login.blade.php -->
-@extends('layouts.app')
+<!-- resources/views/auth/register.blade.php -->
+@extends('layouts.guest')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

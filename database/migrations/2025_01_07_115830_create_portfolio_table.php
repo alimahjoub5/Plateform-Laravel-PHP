@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('portfolio', function (Blueprint $table) {
+        Schema::create('portfolios', function (Blueprint $table) {
             $table->id('PortfolioID'); // Primary key
             $table->unsignedBigInteger('ProjectID'); // Foreign key to projects table
             $table->string('Title', 255);

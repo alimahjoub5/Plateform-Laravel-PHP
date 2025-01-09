@@ -39,14 +39,8 @@
                     <a href="{{ route('users.index') }}" class="text-white text-2xl font-bold">Mon Application</a>
                 </div>
     
-                <!-- Liens de navigation -->
+                <!-- Liens de navigation (Notifications, Profil, Déconnexion) -->
                 <div class="hidden md:flex items-center space-x-4">
-
-                    <!-- Autres liens accessibles à tous -->
-                    <a href="{{ route('blogs.dashboard') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Gerer les blogs</a>
-                    <a href="{{ route('users.create') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Créer un Utilisateur</a>
-                    <a href="{{ route('client.services') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Mes services</a>
-    
                     <!-- Notifications (accessible uniquement aux utilisateurs connectés) -->
                     @auth
                         <div class="relative">
@@ -95,12 +89,6 @@
         <!-- Menu mobile (déroulant) -->
         <div id="mobile-menu" class="md:hidden hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <!-- Lien vers la liste des blogs (accessible à tous) -->
-                <a href="{{ route('blogs.create') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Ecrire Blog</a>    
-                <!-- Autres liens accessibles à tous -->
-                <a href="{{ route('users.index') }}" class="text-white block hover:bg-blue-700 px-3 py-2 rounded-md text-base font-medium">Utilisateurs</a>
-                <a href="{{ route('users.create') }}" class="text-white block hover:bg-blue-700 px-3 py-2 rounded-md text-base font-medium">Créer un Utilisateur</a>
-    
                 <!-- Liens accessibles uniquement aux utilisateurs connectés -->
                 @auth
                     <a href="{{ route('notifications.index') }}" class="text-white block hover:bg-blue-700 px-3 py-2 rounded-md text-base font-medium flex items-center">
@@ -123,21 +111,40 @@
         </div>
     </nav>
 
-    <!-- Notifications flash -->
-    @if(session('success'))
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
-            <p>{{ session('success') }}</p>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-            <p>{{ session('error') }}</p>
-        </div>
-    @endif
+    <!-- Contenu principal avec sidebar -->
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="bg-blue-800 text-white w-64 min-h-screen p-4">
+            <h3 class="text-lg font-bold mb-4">Menu</h3>
+            <ul class="space-y-2">
+                <li><a href="{{ route('blogs.dashboard') }}" class="text-sm hover:underline">Gerer les blogs</a></li>
+                <li><a href="{{ route('admin.projects') }}" class="text-sm hover:underline">Liste des projets</a></li>
+                <li><a href="{{ route('users.index') }}" class="text-sm hover:underline">Liste des utilisateurs</a></li>
+                <li><a href="{{ route('client.services') }}" class="text-sm hover:underline">Mes services</a></li>
+                <li><a href="{{ route('services.index') }}" class="text-sm hover:underline">Gerer Services</a></li>
+                <li><a href="{{ route('admin.dashboard') }}" class="text-sm hover:underline">dashboard</a></li>
+            </ul>
+        </aside>
 
-    <!-- Contenu principal -->
-    <div class="container mx-auto p-4">
-        @yield('content')
+        <!-- Contenu principal -->
+        <main class="flex-1 p-4">
+            <!-- Notifications flash -->
+            @if(session('success'))
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+                    <p>{{ session('success') }}</p>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
+
+            <!-- Contenu dynamique -->
+            <div class="container mx-auto p-4">
+                @yield('content')
+            </div>
+        </main>
     </div>
 
     <!-- Footer -->
@@ -156,8 +163,8 @@
                 <div>
                     <h3 class="text-lg font-bold mb-4">Liens utiles</h3>
                     <ul class="space-y-2">
+                        <li><a href="{{ route('admin.projects') }}" class="text-sm hover:underline">Liste des projets</a></li>
                         <li><a href="{{ route('users.index') }}" class="text-sm hover:underline">Liste des utilisateurs</a></li>
-                        <li><a href="{{ route('users.create') }}" class="text-sm hover:underline">Créer un utilisateur</a></li>
                         <li><a href="#" class="text-sm hover:underline">Contact</a></li>
                     </ul>
                 </div>

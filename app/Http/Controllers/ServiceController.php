@@ -2,63 +2,91 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
 use Illuminate\Http\Request;
 
-class ServiceController
+class ServiceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Affiche la liste des services.
      */
     public function index()
     {
-        //
+        $services = Service::all();
+        return view('admin.services.index', compact('services'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affiche le formulaire de création d'un service.
      */
     public function create()
     {
-        //
+        return view('admin.services.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre un nouveau service.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'ServiceName' => 'required|string|max:255',
+            'Description' => 'required|string',
+            'Price' => 'required|numeric',
+            'Category' => 'required|in:Development,Design,Consulting,Other',
+            'IsAvailable' => 'boolean',
+        ]);
+
+        Service::create($request->all());
+
+        return redirect()->route('services.index')->with('success', 'Service créé avec succès.');
     }
 
     /**
-     * Display the specified resource.
+     * Affiche les détails d'un service.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $service = Service::findOrFail($id);
+        return view('admin.services.show', compact('service'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Affiche le formulaire de modification d'un service.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $service = Service::findOrFail($id);
+        return view('admin.services.edit', compact('service'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour un service.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'ServiceName' => 'required|string|max:255',
+            'Description' => 'required|string',
+            'Price' => 'required|numeric',
+            'Category' => 'required|in:Development,Design,Consulting,Other',
+            'IsAvailable' => 'boolean',
+        ]);
+
+        $service = Service::findOrFail($id);
+        $service->update($request->all());
+
+        return redirect()->route('services.index')->with('success', 'Service mis à jour avec succès.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime un service.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $service = Service::findOrFail($id);
+        $service->delete();
+
+        return redirect()->route('services.index')->with('success', 'Service supprimé avec succès.');
     }
 }

@@ -14,6 +14,14 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
+
+// Route pour afficher la page de contact
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+
+// Route pour traiter l'envoi du formulaire de contact
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 // Routes d'authentification
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -34,12 +42,21 @@ Route::middleware('auth')->group(function () {
 Route::resource('notifications', NotificationController::class)->except(['edit', 'update']);
 Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 //-----------------------------------------------------------------------------------------------
-    Route::resource('portfolio', PortfolioController::class);
+Route::resource('portfolios', PortfolioController::class);
+
     Route::resource('testimonials', TestimonialController::class);
 
     Route::resource('services', ServiceController::class);
-    Route::resource('analytics', AnalyticsController::class);
-
+    //-----------------------------------------------------------
+    Route::post('/analytics/log', [AnalyticsController::class, 'logAnalytics']);
+    Route::get('/analytics/user/{userId}', [AnalyticsController::class, 'getAnalyticsByUser']);
+    Route::get('/analytics/device/{deviceType}', [AnalyticsController::class, 'getAnalyticsByDeviceType']);
+    Route::get('/analytics/{analyticsId}/user', [AnalyticsController::class, 'getAnalyticsWithUser']);
+    Route::delete('/analytics/{analyticsId}', [AnalyticsController::class, 'deleteAnalytics']);
+    
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    });
     //-----------------------------------------------------------
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -68,15 +85,30 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects/{id}/cancel', [ProjectController::class, 'cancelProject'])->name('projects.cancel');
 });    
 
+use App\Models\User; // Importez le modèle User
+use App\Models\Service; // Importez le modèle Service
+
 Route::get('/', function () {
-    return view('welcome');
-})->name('default');;
+    // Récupérer les utilisateurs dont le rôle n'est pas "Client"
+    $teamMembers = User::where('Role', '!=', 'Client')->get();
+
+    // Récupérer les services disponibles
+    $services = Service::where('IsAvailable', true)->get();
+
+    // Passer les utilisateurs et les services à la vue "welcome"
+    return view('welcome', [
+        'teamMembers' => $teamMembers,
+        'services' => $services,
+    ]);
+})->name('default');
+
 
 // Routes publiques
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/home')->name('home');
 Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
 Route::get('/temoignages', [TestimonialController::class, 'index'])->name('testimonials');
+Route::get('/portfolios/public', [PortfolioController::class, 'public'])->name('portfolios.public');
 
 // Routes protégées par authentification
 Route::middleware('auth')->group(function () {

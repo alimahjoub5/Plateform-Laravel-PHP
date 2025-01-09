@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->PasswordHash;
     }
 
+    public function analytics()
+    {
+        return $this->hasMany(Analytics::class, 'UserID');
+    }
+    
     // Utiliser 'Username' comme identifiant de connexion
     public function username()
     {
