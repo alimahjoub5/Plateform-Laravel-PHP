@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
+use App\Models\ContactInfo;
 
 class ContactController extends Controller
 {
@@ -13,7 +14,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        return view('contact.index');
+        $contactInfo = ContactInfo::first();
+        return view('contact.index', compact('contactInfo'));    
     }
 
     /**

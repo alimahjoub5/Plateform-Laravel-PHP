@@ -20,7 +20,7 @@
                 <div class="flex items-center">
                     <a href="{{ route('testimonials') }}" class="text-white text-2xl font-bold">Mon Application</a>
                 </div>
-
+    
                 <!-- Liens de navigation -->
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="{{ route('default') }}#features" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Fonctionnalités</a>
@@ -28,10 +28,18 @@
                     <!-- Lien vers la liste des blogs (accessible à tous) -->
                     <a href="{{ route('blogs.index') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Blogs</a>
                     <a href="{{ route('testimonials') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Témoignages</a>
-                    <a href="{{ route('portfolios.public') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">portfolios</a>
-                    <a href="{{ route('login') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Connexion</a>
-                    <a href="{{ route('register') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Inscription</a>
-                    <a href="{{ route('contact') }}" class="bg-white text-blue-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Contact</a>
+                    <a href="{{ route('portfolios.public') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Portfolios</a>
+    
+                    <!-- Liens conditionnels -->
+                    @auth
+                        <!-- Lien "Application" pour les utilisateurs authentifiés -->
+                        <a href="{{ route('users.index') }}" class="bg-white text-blue-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Application</a>
+                    @else
+                        <!-- Liens pour les utilisateurs non authentifiés -->
+                        <a href="{{ route('login') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Connexion</a>
+                        <a href="{{ route('register') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Inscription</a>
+                        <a href="{{ route('contact') }}" class="bg-white text-blue-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Contact</a>
+                    @endauth
                 </div>
             </div>
         </div>

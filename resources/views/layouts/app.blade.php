@@ -11,6 +11,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         // Initialiser CKEditor sur le textarea avec l'id "Content"
         CKEDITOR.replace('Content', {
@@ -114,15 +116,62 @@
     <!-- Contenu principal avec sidebar -->
     <div class="flex">
         <!-- Sidebar -->
-        <aside class="bg-blue-800 text-white w-64 min-h-screen p-4">
-            <h3 class="text-lg font-bold mb-4">Menu</h3>
-            <ul class="space-y-2">
-                <li><a href="{{ route('blogs.dashboard') }}" class="text-sm hover:underline">Gerer les blogs</a></li>
-                <li><a href="{{ route('admin.projects') }}" class="text-sm hover:underline">Liste des projets</a></li>
-                <li><a href="{{ route('users.index') }}" class="text-sm hover:underline">Liste des utilisateurs</a></li>
-                <li><a href="{{ route('client.services') }}" class="text-sm hover:underline">Mes services</a></li>
-                <li><a href="{{ route('services.index') }}" class="text-sm hover:underline">Gerer Services</a></li>
-                <li><a href="{{ route('admin.dashboard') }}" class="text-sm hover:underline">dashboard</a></li>
+        <aside class="bg-blue-800 text-white w-64 min-h-screen p-6 shadow-lg">
+            <!-- Titre du menu -->
+            <h3 class="text-xl font-bold mb-6 flex items-center text-white">
+                <i class="fas fa-bars mr-2"></i> Menu
+            </h3>
+        
+            <!-- Liste des liens -->
+            <ul class="space-y-3">
+                <!-- Lien "Gérer les blogs" -->
+                <li>
+                    <a href="{{ route('blogs.dashboard') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-blog mr-3"></i> Gérer les blogs
+                    </a>
+                </li>
+        
+                <!-- Lien "Liste des projets" -->
+                <li>
+                    <a href="{{ route('admin.projects') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-project-diagram mr-3"></i> Liste des projets
+                    </a>
+                </li>
+        
+                <!-- Lien "Liste des utilisateurs" -->
+                <li>
+                    <a href="{{ route('users.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-users mr-3"></i> Liste des utilisateurs
+                    </a>
+                </li>
+        
+                <!-- Lien "Mes services" -->
+                <li>
+                    <a href="{{ route('client.services') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-cogs mr-3"></i> Mes services
+                    </a>
+                </li>
+        
+                <!-- Lien "Gérer les services" -->
+                <li>
+                    <a href="{{ route('services.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-tools mr-3"></i> Gérer les services
+                    </a>
+                </li>
+        
+                <!-- Lien "Informations de contact" -->
+                <li>
+                    <a href="{{ route('dashboard.contact-info.edit') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-edit mr-3"></i> Informations de contact
+                    </a>
+                </li>
+        
+                <!-- Lien "Dashboard" -->
+                <li>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+                    </a>
+                </li>
             </ul>
         </aside>
 

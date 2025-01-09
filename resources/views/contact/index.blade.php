@@ -61,37 +61,49 @@
                 <h2 class="text-2xl font-bold mb-6">Informations de contact</h2>
                 <div class="space-y-4">
                     <p class="text-gray-700">
-                        <i class="fas fa-phone-alt mr-2"></i> +33 1 23 45 67 89
+                        <i class="fas fa-phone-alt mr-2"></i> {{ $contactInfo->phone ?? '+33 1 23 45 67 89' }}
                     </p>
                     <p class="text-gray-700">
-                        <i class="fas fa-envelope mr-2"></i> contact@example.com
+                        <i class="fas fa-envelope mr-2"></i> {{ $contactInfo->email ?? 'contact@example.com' }}
                     </p>
                     <p class="text-gray-700">
-                        <i class="fas fa-map-marker-alt mr-2"></i> 123 Rue de l'Exemple, 75001 Paris
+                        <i class="fas fa-map-marker-alt mr-2"></i> {{ $contactInfo->address ?? '123 Rue de l\'Exemple, 75001 Paris' }}
                     </p>
                     <p class="text-gray-700">
-                        <i class="fas fa-clock mr-2"></i> Lundi - Vendredi : 9h - 18h
+                        <i class="fas fa-clock mr-2"></i> {{ $contactInfo->working_hours ?? 'Lundi - Vendredi : 9h - 18h' }}
                     </p>
                 </div>
+            
+<!-- Réseaux sociaux -->
+<div class="mt-8">
+    <h2 class="text-2xl font-bold mb-6">Suivez-nous</h2>
+    <div class="flex justify-center space-x-4">
+        @if($contactInfo->facebook_url)
+            <a href="{{ $contactInfo->facebook_url }}" class="text-blue-600 hover:text-blue-800 transition duration-300">
+                <i class="fab fa-facebook-square text-3xl"></i>
+            </a>
+        @endif
 
-                <!-- Réseaux sociaux -->
-                <div class="mt-8">
-                    <h2 class="text-2xl font-bold mb-6">Suivez-nous</h2>
-                    <div class="flex justify-center space-x-4">
-                        <a href="https://facebook.com" class="text-blue-600 hover:text-blue-800 transition duration-300">
-                            <i class="fab fa-facebook-square text-3xl"></i>
-                        </a>
-                        <a href="https://twitter.com" class="text-blue-400 hover:text-blue-600 transition duration-300">
-                            <i class="fab fa-twitter-square text-3xl"></i>
-                        </a>
-                        <a href="https://linkedin.com" class="text-blue-700 hover:text-blue-900 transition duration-300">
-                            <i class="fab fa-linkedin text-3xl"></i>
-                        </a>
-                        <a href="https://instagram.com" class="text-pink-500 hover:text-pink-700 transition duration-300">
-                            <i class="fab fa-instagram-square text-3xl"></i>
-                        </a>
-                    </div>
-                </div>
+        @if($contactInfo->twitter_url)
+            <a href="{{ $contactInfo->twitter_url }}" class="text-blue-400 hover:text-blue-600 transition duration-300">
+                <i class="fab fa-twitter-square text-3xl"></i>
+            </a>
+        @endif
+
+        @if($contactInfo->linkedin_url)
+            <a href="{{ $contactInfo->linkedin_url }}" class="text-blue-700 hover:text-blue-900 transition duration-300">
+                <i class="fab fa-linkedin text-3xl"></i>
+            </a>
+        @endif
+
+        @if($contactInfo->instagram_url)
+            <a href="{{ $contactInfo->instagram_url }}" class="text-pink-500 hover:text-pink-700 transition duration-300">
+                <i class="fab fa-instagram-square text-3xl"></i>
+            </a>
+        @endif
+    </div>
+</div>
+
             </div>
         </div>
     </div>

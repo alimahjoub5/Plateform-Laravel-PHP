@@ -16,7 +16,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ContactInfoController;
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard/contact-info/edit', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
+    Route::put('/dashboard/contact-info/update', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
+});
 // Route pour afficher la page de contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
@@ -108,7 +113,7 @@ Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/home')->name('home');
 Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
 Route::get('/temoignages', [TestimonialController::class, 'index'])->name('testimonials');
-Route::get('/portfolios/public', [PortfolioController::class, 'public'])->name('portfolios.public');
+Route::get('portPub', [PortfolioController::class, 'affiche'])->name('portfolios.public');
 
 // Routes protégées par authentification
 Route::middleware('auth')->group(function () {
@@ -119,3 +124,4 @@ Route::middleware('auth')->group(function () {
     Route::put('/blogs/{blog}', [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
 });
+Route::get('/tags', [PortfolioController::class, 'getTags'])->name('tags.autocomplete');
