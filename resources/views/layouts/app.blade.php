@@ -137,13 +137,26 @@
                         <i class="fas fa-project-diagram mr-3"></i> Liste des projets
                     </a>
                 </li>
+
         
-                <!-- Lien "Liste des utilisateurs" -->
-                <li>
-                    <a href="{{ route('users.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-users mr-3"></i> Liste des utilisateurs
-                    </a>
-                </li>
+<!-- Lien "Liste des utilisateurs" -->
+<li>
+    <a href="{{ route('users.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white" title="Voir la liste des utilisateurs">
+        <i class="fas fa-users mr-3"></i> Liste des utilisateurs
+    </a>
+</li>
+
+<!-- Lien "Devis" -->
+<li>
+    <a href="{{ route('devis.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white" title="Gérer les devis">
+        <i class="fas fa-file-invoice mr-3"></i> Devis
+    </a>
+</li>
+<li>
+    <a href="{{ route('client.devis.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white" title="Gérer les devis">
+        <i class="fas fa-file-invoice mr-3"></i> devis pour client
+    </a>
+</li>
         
                 <!-- Lien "Mes services" -->
                 <li>

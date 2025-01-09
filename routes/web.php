@@ -17,6 +17,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactInfoController;
+use App\Http\Controllers\DevisController;
+use App\Http\Controllers\ClientDevisController;
+
+// Routes pour les devis
+Route::resource('devis', DevisController::class);
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/contact-info/edit', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
@@ -125,3 +131,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
 });
 Route::get('/tags', [PortfolioController::class, 'getTags'])->name('tags.autocomplete');
+
+
+// Routes pour les devis côté client
+Route::middleware(['auth'])->group(function () {
+    Route::get('/client/devis', [ClientDevisController::class, 'index'])->name('client.devis.index');
+    Route::get('/client/devis/{devis}', [ClientDevisController::class, 'show'])->name('client.devis.show');
+    Route::post('/client/devis/{devis}/accept', [ClientDevisController::class, 'accept'])->name('client.devis.accept');
+    Route::post('/client/devis/{devis}/reject', [ClientDevisController::class, 'reject'])->name('client.devis.reject');
+    Route::post('/client/devis/{devis}/request-changes', [ClientDevisController::class, 'requestChanges'])->name('client.devis.requestChanges');
+    
+    // Ajoutez cette route pour le téléchargement du devis
+    Route::get('/client/devis/{devis}/download', [ClientDevisController::class, 'download'])->name('client.devis.download');
+    Route::post('/devis/{devis}/action', [DevisController::class, 'action'])
+    ->name('client.devis.action');
+});
