@@ -75,6 +75,10 @@
                                                                     <i class="fas fa-ban me-1"></i> Rejeté
                                                                 </span>
                                                             @elseif ($project->Status === 'Completed')
+                                                                <!-- Bouton pour laisser un témoignage -->
+                                                                <a href="{{ route('testimonials.create', ['ProjectID' => $project->ProjectID]) }}" class="btn btn-sm btn-success">
+                                                                    <i class="fas fa-star me-1"></i> Laisser un témoignage
+                                                                </a>
                                                                 <span class="text-success">
                                                                     <i class="fas fa-check-circle me-1"></i> Terminé
                                                                 </span>
@@ -147,6 +151,19 @@
 
         .btn-danger:hover {
             background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: #218838;
         }
 
         .text-danger {

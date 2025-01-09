@@ -36,6 +36,7 @@ Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 
 //-----------------------------------------------------------------------------------------------
     Route::resource('portfolio', PortfolioController::class);
     Route::resource('testimonials', TestimonialController::class);
+
     Route::resource('services', ServiceController::class);
     Route::resource('analytics', AnalyticsController::class);
 
@@ -70,14 +71,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/', function () {
     return view('welcome');
 })->name('default');;
-Route::get('/temoignages', function () {
-    return view('testimonials');
-})->name('testimonials');
 
 // Routes publiques
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/home')->name('home');
 Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
+Route::get('/temoignages', [TestimonialController::class, 'index'])->name('testimonials');
 
 // Routes protégées par authentification
 Route::middleware('auth')->group(function () {

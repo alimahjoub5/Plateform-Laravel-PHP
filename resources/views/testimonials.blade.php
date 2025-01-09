@@ -52,77 +52,58 @@
     </div>
 
     <!-- Statistiques de satisfaction -->
-    <div class="container mx-auto px-4 py-16 bg-white">
-        <h2 class="text-3xl font-bold text-center mb-12">Notre satisfaction client</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="text-center">
-                <i class="fas fa-smile text-5xl text-blue-600 mb-4"></i>
-                <h3 class="text-4xl font-bold text-blue-600 mb-2">95%</h3>
-                <p class="text-gray-600">Clients satisfaits</p>
-            </div>
-            <div class="text-center">
-                <i class="fas fa-users text-5xl text-blue-600 mb-4"></i>
-                <h3 class="text-4xl font-bold text-blue-600 mb-2">10K+</h3>
-                <p class="text-gray-600">Utilisateurs actifs</p>
-            </div>
-            <div class="text-center">
-                <i class="fas fa-tasks text-5xl text-blue-600 mb-4"></i>
-                <h3 class="text-4xl font-bold text-blue-600 mb-2">98%</h3>
-                <p class="text-gray-600">Tâches accomplies</p>
-            </div>
-            <div class="text-center">
-                <i class="fas fa-star text-5xl text-blue-600 mb-4"></i>
-                <h3 class="text-4xl font-bold text-blue-600 mb-2">4.8/5</h3>
-                <p class="text-gray-600">Note moyenne</p>
-            </div>
+<!-- Statistiques de satisfaction -->
+<!-- Statistiques de satisfaction -->
+<div class="container mx-auto px-4 py-16 bg-white">
+    <h2 class="text-3xl font-bold text-center mb-12">Notre satisfaction client</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+            <i class="fas fa-smile text-5xl text-blue-600 mb-4"></i>
+            <h3 class="text-4xl font-bold text-blue-600 mb-2">{{ number_format($satisfactionPercentage, 0) }}%</h3>
+            <p class="text-gray-600">Clients satisfaits</p>
+        </div>
+        <div class="text-center">
+            <i class="fas fa-users text-5xl text-blue-600 mb-4"></i>
+            <h3 class="text-4xl font-bold text-blue-600 mb-2">{{ $activeClientsCount }}+</h3>
+            <p class="text-gray-600">Utilisateurs actifs</p>
+        </div>
+        <div class="text-center">
+            <i class="fas fa-tasks text-5xl text-blue-600 mb-4"></i>
+            <h3 class="text-4xl font-bold text-blue-600 mb-2">98%</h3>
+            <p class="text-gray-600">Tâches accomplies</p>
+        </div>
+        <div class="text-center">
+            <i class="fas fa-star text-5xl text-blue-600 mb-4"></i>
+            <h3 class="text-4xl font-bold text-blue-600 mb-2">{{ number_format($averageRating, 1) }}/5</h3>
+            <p class="text-gray-600">Note moyenne</p>
         </div>
     </div>
+</div>
 
    <!-- Testimonials Section -->
-<!-- Testimonials Section -->
-<div class="py-16 bg-white">
+ <!-- Testimonials Section -->
+ <div class="py-16 bg-white">
     <div class="max-w-6xl mx-auto px-4">
         <h2 class="text-3xl font-bold text-center mb-12">Ce qu'ils disent de nous</h2>
 
         <!-- Swiper Container -->
         <div class="swiper-container">
             <div class="swiper-wrapper">
-                <!-- Témoignage 1 -->
+                @foreach ($testimonials as $testimonial)
                 <div class="swiper-slide">
                     <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
                         <i class="fas fa-quote-left text-2xl text-blue-600 mb-4"></i>
                         <p class="text-gray-700 mb-4">
-                            "Mon Application a révolutionné notre façon de travailler. Tout est plus simple et plus efficace."
+                            "{{ $testimonial->Feedback }}"
                         </p>
-                        <p class="text-gray-600 font-semibold">— Jean Dupont, Développeur</p>
+                        <p class="text-gray-600 font-semibold">— {{ $testimonial->client->Username }}, {{ $testimonial->project->Title }}</p>
                     </div>
                 </div>
-
-                <!-- Témoignage 2 -->
-                <div class="swiper-slide">
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
-                        <i class="fas fa-quote-left text-2xl text-blue-600 mb-4"></i>
-                        <p class="text-gray-700 mb-4">
-                            "La gestion des tâches est incroyablement intuitive. Je recommande vivement cette plateforme."
-                        </p>
-                        <p class="text-gray-600 font-semibold">— Marie Martin, Chef de projet</p>
-                    </div>
-                </div>
-
-                <!-- Témoignage 3 -->
-                <div class="swiper-slide">
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
-                        <i class="fas fa-quote-left text-2xl text-blue-600 mb-4"></i>
-                        <p class="text-gray-700 mb-4">
-                            "Une excellente solution pour les équipes. La collaboration n'a jamais été aussi facile."
-                        </p>
-                        <p class="text-gray-600 font-semibold">— Pierre Leroy, Client</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Pagination -->
-            <div class="swiper-pagination mt-8"></div> <!-- Points de pagination -->
+            <div class="swiper-pagination mt-8"></div>
         </div>
     </div>
 </div>
