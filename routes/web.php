@@ -19,6 +19,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactInfoController;
 use App\Http\Controllers\DevisController;
 use App\Http\Controllers\ClientDevisController;
+use App\Http\Controllers\PaymentController;
+
+Route::get('/payment/{invoiceId}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+Route::post('/payment/process/{invoiceId}', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::get('/bro', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+
+
 
 // Routes pour les devis
 Route::resource('devis', DevisController::class);

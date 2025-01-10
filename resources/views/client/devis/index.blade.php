@@ -59,4 +59,11 @@
         </div>
     @endif
 </div>
+<form action="{{ route('payment.process', 1) }}" method="POST" id="payment-form">
+    @csrf
+    <div id="card-element">
+        <!-- Stripe Card Element sera injecté ici -->
+    </div>
+    <button id="submit-button" class="btn btn-primary mt-3">Payer</button>
+</form>
 @endsection

@@ -2,63 +2,87 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
-class InvoiceController
+class InvoiceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher la liste des factures.
      */
     public function index()
     {
-        //
+        $invoices = Invoice::with('client')->get(); // Charger les clients associés
+        return view('invoices.index', compact('invoices'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Afficher le formulaire de création d'une facture.
      */
     public function create()
     {
-        //
+        $clients = Client::all(); // Récupérer tous les clients pour le formulaire
+        return view('invoices.create', compact('clients'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistrer une nouvelle facture.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'amount' => 'required|numeric|min:0',
+            'due_date' => 'required|date',
+            'status' => 'required|in:paid,unpaid',
+        ]);
+
+        Invoice::create($request->all());
+
+        return redirect()->route('invoices.index')->with('success', 'Facture créée avec succès.');
     }
 
     /**
-     * Display the specified resource.
+     * Afficher les détails d'une facture.
      */
-    public function show(string $id)
+    public function show(Invoice $invoice)
     {
-        //
+        return view('invoices.show', compact('invoice'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Afficher le formulaire de modification d'une facture.
      */
-    public function edit(string $id)
+    public function edit(Invoice $invoice)
     {
-        //
+        $clients = Client::all(); // Récupérer tous les clients pour le formulaire
+        return view('invoices.edit', compact('invoice', 'clients'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mettre à jour une facture.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Invoice $invoice)
     {
-        //
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'amount' => 'required|numeric|min:0',
+            'due_date' => 'required|date',
+            'status' => 'required|in:paid,unpaid',
+        ]);
+
+        $invoice->update($request->all());
+
+        return redirect()->route('invoices.index')->with('success', 'Facture mise à jour avec succès.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprimer une facture.
      */
-    public function destroy(string $id)
+    public function destroy(Invoice $invoice)
     {
-        //
+        $invoice->delete();
+        return redirect()->route('invoices.index')->with('success', 'Facture supprimée avec succès.');
     }
 }

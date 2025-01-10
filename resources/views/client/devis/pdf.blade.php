@@ -182,9 +182,7 @@
         <!-- Afficher la signature si elle existe -->
         @if ($devis->signature)
             <p>Signature du client :</p>
-            <img src="{{ $devis->signature }}" alt="Signature du client" style="max-width: 100%; height: auto; border: 1px solid #000;">
-        @else
-            <p>Signature du client : _________________________</p>
+            <img src="{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
         @endif
         <p>Date : {{ now()->format('d/m/Y') }}</p> <!-- Afficher la date actuelle -->
     </div>
