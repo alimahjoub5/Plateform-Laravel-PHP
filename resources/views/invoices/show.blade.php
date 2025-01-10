@@ -8,6 +8,7 @@
     <div class="card">
         <div class="card-body">
             <p class="card-text"><strong>Client :</strong> {{ $invoice->client->Username }}</p>
+            <p class="card-text"><strong>Description :</strong> {{ $invoice->Description }}</p>
             <p class="card-text"><strong>Projet :</strong> {{ $invoice->project->Title }}</p>
             <p class="card-text"><strong>Montant :</strong> {{ number_format($invoice->Amount, 2, ',', ' ') }} €</p>
             <p class="card-text"><strong>Date d'échéance :</strong> {{ \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') }}</p>

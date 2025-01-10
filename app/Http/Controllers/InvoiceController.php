@@ -73,20 +73,22 @@ class InvoiceController extends Controller
             'Amount' => 'required|numeric|min:0',
             'DueDate' => 'required|date',
             'Status' => 'required|in:Pending,Paid,Overdue',
+            'Description' => 'nullable|string', // Ajoutez cette ligne
         ]);
-
-        // Créer la facture
-        Invoice::create([
+    
+        // Création de la facture
+        $invoice = Invoice::create([
             'ProjectID' => $request->ProjectID,
             'ClientID' => $request->ClientID,
             'Amount' => $request->Amount,
             'DueDate' => $request->DueDate,
             'Status' => $request->Status,
+            'Description' => $request->Description, // Ajoutez cette ligne
         ]);
-
+    
         // Redirection avec un message de succès
-        return redirect()->route('projects.show', $request->ProjectID)
-                         ->with('success', 'La facture a été créée avec succès.');
+        return redirect()->route('invoices.show', $invoice->InvoiceID)
+                         ->with('success', 'Facture créée avec succès.');
     }
 
     /**

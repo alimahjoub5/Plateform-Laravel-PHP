@@ -10,7 +10,8 @@ class Invoice extends Model
     protected $primaryKey = 'InvoiceID';
 
     protected $fillable = [
-        'ProjectID', 'ClientID', 'Amount', 'Status', 'DueDate'
+        'ProjectID', 'ClientID', 'Amount', 'Status', 'DueDate','Description', // Ajoutez cette ligne
+
     ];
 
     // Relationships

@@ -47,6 +47,12 @@
             </select>
         </div>
 
+        <!-- Champ Description -->
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <textarea class="form-control" id="Description" name="Description" rows="4"></textarea>
+        </div>
+
         <!-- Bouton de soumission -->
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Enregistrer la facture

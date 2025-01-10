@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invoices', function (Blueprint $table) {
-            $table->id('InvoiceID'); // Primary key
-            $table->unsignedBigInteger('ProjectID'); // Foreign key to projects table
-            $table->unsignedBigInteger('ClientID'); // Foreign key to users table
-            $table->decimal('Amount', 15, 2);
-            $table->enum('Status', ['Pending', 'Paid', 'Overdue'])->default('Pending');
-            $table->date('DueDate');
+            $table->id('InvoiceID'); // Clé primaire
+            $table->unsignedBigInteger('ProjectID'); // Clé étrangère vers la table `projects`
+            $table->unsignedBigInteger('ClientID'); // Clé étrangère vers la table `users`
+            $table->decimal('Amount', 15, 2); // Montant de la facture
+            $table->enum('Status', ['Pending', 'Paid', 'Overdue'])->default('Pending'); // Statut de la facture
+            $table->date('DueDate'); // Date d'échéance
+            $table->text('Description')->nullable(); // Nouvelle colonne pour la description
             $table->timestamps();
-
-            // Foreign key constraints
+    
+            // Contraintes de clé étrangère
             $table->foreign('ProjectID')->references('ProjectID')->on('projects')->onDelete('cascade');
             $table->foreign('ClientID')->references('UserID')->on('users')->onDelete('cascade');
         });

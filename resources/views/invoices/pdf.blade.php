@@ -7,8 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px; /* Texte plus petit */
-            color: #333; /* Couleur de texte plus douce */
+            font-size: 10px;
+            color: #333;
             background-color: #fff;
             line-height: 1.4;
         }
@@ -16,7 +16,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            border: 1px solid #ddd; /* Bordure légère */
+            border: 1px solid #ddd;
         }
         .invoice-header {
             text-align: center;
@@ -39,7 +39,7 @@
             font-size: 14px;
             margin: 0 0 10px 0;
             color: #000;
-            border-bottom: 1px solid #ddd; /* Ligne de séparation */
+            border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
         }
         .section table {
@@ -47,13 +47,13 @@
             border-collapse: collapse;
         }
         .section th, .section td {
-            border: 1px solid #ddd; /* Bordures plus légères */
+            border: 1px solid #ddd;
             padding: 6px;
             text-align: left;
             font-size: 10px;
         }
         .section th {
-            background-color: #f9f9f9; /* Fond légèrement gris pour les en-têtes */
+            background-color: #f9f9f9;
             font-weight: bold;
         }
         .invoice-footer {
@@ -91,6 +91,12 @@
             </table>
         </div>
 
+        <!-- Description de la facture -->
+        <div class="section">
+            <h2>Description de la facture</h2>
+            <p>{{ $invoice->Description ?? 'Aucune description fournie.' }}</p>
+        </div>
+
         <!-- Informations du client -->
         <div class="section">
             <h2>Informations du client</h2>
@@ -101,15 +107,15 @@
                 </tr>
                 <tr>
                     <th>Email</th>
-                    <td>{{ $invoice->client->email }}</td>
+                    <td>{{ $invoice->client->Email }}</td>
                 </tr>
                 <tr>
                     <th>Téléphone</th>
-                    <td>{{ $invoice->client->phone }}</td>
+                    <td>{{ $invoice->client->Phone }}</td>
                 </tr>
                 <tr>
                     <th>Adresse</th>
-                    <td>{{ $invoice->client->address }}</td>
+                    <td>{{ $invoice->client->Address }}</td>
                 </tr>
             </table>
         </div>
@@ -130,14 +136,7 @@
                     <th>Budget</th>
                     <td>{{ number_format($invoice->project->Budget, 2, ',', ' ') }} €</td>
                 </tr>
-                <tr>
-                    <th>Date limite</th>
-                    <td>{{ \Carbon\Carbon::parse($invoice->project->Deadline)->format('d/m/Y') }}</td>
-                </tr>
-                <tr>
-                    <th>Statut</th>
-                    <td>{{ $invoice->project->Status }}</td>
-                </tr>
+
             </table>
         </div>
 
