@@ -4,14 +4,30 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\payments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
     /**
      * Afficher la liste des factures.
      */
+    
+    public function download($id)
+    {
+        // Récupérer la facture avec les relations nécessaires
+        $invoice = Invoice::with(['client', 'project', 'payments'])->findOrFail($id);
+    
+        // Générer le PDF
+        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
+    
+        // Télécharger le PDF
+        return $pdf->download('facture-' . $invoice->InvoiceID . '.pdf');
+    }
+
+
     public function index()
     {
         // Récupérer l'utilisateur connecté

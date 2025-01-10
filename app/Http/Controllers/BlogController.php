@@ -13,9 +13,6 @@ class BlogController extends Controller
     // Afficher la liste des blogs
     public function index()
     {
-        // Enregistrer l'événement de visite de page
-        event(new PageVisited(request()->path(), Auth::id(), 'view', request()->header('User-Agent')));
-
         $blogs = Blog::paginate(6); // Pagination avec 6 blogs par page
         return view('blogs.index', compact('blogs'));
     }
@@ -64,8 +61,6 @@ class BlogController extends Controller
     // Afficher un blog spécifique
     public function show(Blog $blog)
     {
-        // Enregistrer l'événement de visite de page
-        event(new PageVisited(request()->path(), Auth::id(), 'view', request()->header('User-Agent')));
 
         return view('blogs.show', compact('blog'));
     }

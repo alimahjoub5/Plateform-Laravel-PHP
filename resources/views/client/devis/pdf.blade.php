@@ -175,6 +175,7 @@
         </div>
 
 <!-- Signature -->
+<!-- Signature -->
 <div class="signature">
     <h2>Signature</h2>
     <p>Le client reconnaît avoir pris connaissance de ce devis et accepte les conditions générales.</p>
@@ -182,9 +183,9 @@
         <!-- Afficher la signature si elle existe -->
         @if ($devis->signature)
             <p>Signature du client :</p>
-            <img src="{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
+            <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
         @endif
-        <p>Date : {{ now()->format('d/m/Y') }}</p> <!-- Afficher la date actuelle -->
+        <p>Date : {{ $devis->updated_at }}</p> <!-- Afficher la date actuelle -->
     </div>
 </div>
     </main>

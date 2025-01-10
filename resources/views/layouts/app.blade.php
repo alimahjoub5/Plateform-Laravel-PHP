@@ -141,8 +141,8 @@
         
 <!-- Lien "Liste des utilisateurs" -->
 <li>
-    <a href="{{ route('users.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white" title="Voir la liste des utilisateurs">
-        <i class="fas fa-users mr-3"></i> Liste des utilisateurs
+    <a href="{{ route('clients.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white" title="Voir la liste des utilisateurs">
+        <i class="fas fa-users mr-3"></i> Liste des dossiers
     </a>
 </li>
 

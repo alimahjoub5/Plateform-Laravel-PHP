@@ -88,68 +88,33 @@
                     <p class="mb-1"><strong>Heures de travail :</strong> {{ $contactInfo->working_hours ?? 'Non spécifié' }}</p>
                 </div>
             </div>
+
+            <div class="signature">
+                <h2>Signature</h2>
+                @if ($devis->Statut == 'Accepté')
+                    <!-- Afficher la signature si le devis est déjà accepté -->
+                    <p>Signature du client :</p>
+                    <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
+                    <p>Date : {{ $devis->updated_at }}</p> <!-- Afficher la date actuelle -->
+                @endif
+            </div>
         </div>
     </div>
+
 
     <!-- Boutons de retour et d'impression -->
     <div class="text-center">
         <a href="{{ route('devis.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Retour à la liste
         </a>
-        <button onclick="printDevis()" class="btn btn-primary">
-            <i class="fas fa-print"></i> Imprimer
-        </button>
+        <a href="{{ route('client.devis.download', $devis) }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-download"></i> Télécharger
+        </a>
     </div>
 </div>
 
 <!-- Inclure Font Awesome pour les icônes -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-<!-- Script pour imprimer la section spécifique -->
-<script>
-    function printDevis() {
-        // Récupérer la section à imprimer
-        const printableSection = document.getElementById('printable-section').innerHTML;
 
-        // Ouvrir une nouvelle fenêtre
-        const printWindow = window.open('', '', 'height=600,width=800');
-
-        // Écrire le contenu dans la nouvelle fenêtre
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Devis #{{ $devis->Reference }}</title>
-                    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-                    <style>
-                        @media print {
-                            .card {
-                                border: none;
-                                box-shadow: none;
-                            }
-                            .card-header {
-                                background-color: transparent !important;
-                                color: #000 !important;
-                            }
-                            .bg-light {
-                                background-color: transparent !important;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${printableSection}
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            window.close();
-                        };
-                    <\/script>
-                </body>
-            </html>
-        `);
-
-        // Fermer le document pour déclencher l'impression
-        printWindow.document.close();
-    }
-</script>
 @endsection

@@ -98,6 +98,12 @@ class DevisController extends Controller
         // Récupérer le devis par son ID avec les relations
         $devis = Devis::with(['client', 'project', 'createdBy'])->findOrFail($id);
     
+        // Bloquer les modifications si le devis est signé ou si le statut n'est plus "En attente"
+        if ($devis->signature || $devis->Statut !== 'En attente') {
+            return redirect()->route('devis.index')
+                ->with('error', 'Ce devis ne peut plus être modifié car il a été signé ou son statut a changé.');
+        }
+    
         // Récupérer la liste des projets et clients pour le formulaire
         $projects = Project::all();
         $clients = User::where('Role', 'Client')->get();
@@ -108,6 +114,12 @@ class DevisController extends Controller
     
     public function update(Request $request, Devis $devis)
     {
+        // Bloquer les modifications si le devis est signé ou si le statut n'est plus "En attente"
+        if ($devis->signature || $devis->Statut !== 'En attente') {
+            return redirect()->route('devis.index')
+                ->with('error', 'Ce devis ne peut plus être modifié car il a été signé ou son statut a changé.');
+        }
+    
         // Validation des données du formulaire
         $request->validate([
             'ProjectID' => 'required|exists:projects,ProjectID',
@@ -133,9 +145,15 @@ class DevisController extends Controller
      */
     public function destroy(Devis $devis)
     {
+        // Bloquer la suppression si le devis est signé ou si le statut n'est plus "En attente"
+        if ($devis->signature || $devis->Statut !== 'En attente') {
+            return redirect()->route('devis.index')
+                ->with('error', 'Ce devis ne peut plus être supprimé car il a été signé ou son statut a changé.');
+        }
+    
         // Suppression du devis
         $devis->delete();
-
+    
         // Redirection vers la liste des devis avec un message de succès
         return redirect()->route('devis.index')->with('success', 'Devis supprimé avec succès.');
     }
@@ -147,24 +165,23 @@ class DevisController extends Controller
             'signature' => 'required|string', // La signature est obligatoire
             'action' => 'required|in:accept,reject', // L'action doit être "accept" ou "reject"
         ]);
-
-        // Enregistrer la signature
-        $devis->update([
-            'signature' => $request->input('signature'), // Stocker la signature en base64
-        ]);
-
-        // Gérer l'action
+    
+        // Extraire la partie base64 de la signature (supprimer le préfixe "data:image/png;base64,")
+        $signatureData = $request->input('signature');
+        $base64Data = explode(',', $signatureData)[1] ?? $signatureData;
+    
+        // Déterminer le nouveau statut en fonction de l'action
         $action = $request->input('action');
-        if ($action === 'accept') {
-            $devis->update(['Statut' => 'Accepté']);
-            $message = 'Devis accepté avec succès.';
-        } elseif ($action === 'reject') {
-            $devis->update(['Statut' => 'Refusé']);
-            $message = 'Devis refusé avec succès.';
-        }
-
+        $nouveauStatut = ($action === 'accept') ? 'Accepté' : 'Refusé';
+    
+        // Mettre à jour le devis (signature et statut)
+        $devis->update([
+            'signature' => $base64Data, // Stocker uniquement la partie base64
+            'Statut' => $nouveauStatut, // Mettre à jour le statut
+        ]);
+    
         // Rediriger avec un message de succès
         return redirect()->route('client.devis.show', $devis)
-            ->with('success', $message);
+            ->with('success', 'Devis mis à jour avec succès.');
     }
 }

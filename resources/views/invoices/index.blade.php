@@ -54,7 +54,12 @@
                             <a href="{{ route('invoices.show', $invoice->InvoiceID) }}" class="btn btn-info btn-sm">
                                 <i class="fas fa-eye"></i>
                             </a>
-
+                            <!-- Bouton Télécharger la facture en PDF -->
+                            @if (Auth::user()->Role === 'Admin' || Auth::user()->Role === 'Client')
+                                <a href="{{ route('invoices.download', $invoice->InvoiceID) }}" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-download"></i> Télécharger
+                               </a>
+                            @endif
                             <!-- Bouton Modifier (visible uniquement pour l'admin) -->
                             @if (Auth::user()->Role === 'Admin')
                                 <a href="{{ route('invoices.edit', $invoice->InvoiceID) }}" class="btn btn-warning btn-sm">

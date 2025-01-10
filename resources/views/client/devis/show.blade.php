@@ -89,83 +89,68 @@
                 </div>
             </div>
 
-            <!-- Signature -->
-            <div class="signature">
-                <h2>Signature</h2>
-                <p>Le client reconnaît avoir pris connaissance de ce devis et accepte les conditions générales.</p>
-                <div>
-                    <!-- Afficher la signature si elle existe -->
-                    @if ($devis->signature)
-                        <p>Signature du client :</p>
-                        <img src="{{ $devis->signature }}" alt="Signature du client" style="max-width: 100%; height: auto; border: 1px solid #000;">
-                    @else
-                        <p>Signature du client : _________________________</p>
-                    @endif
-                    <p>Date : {{ now()->format('d/m/Y') }}</p> <!-- Afficher la date actuelle -->
+                       <!-- Signature -->
+                       <div class="signature">
+                        <h2>Signature</h2>
+                        @if ($devis->Statut == 'Accepté')
+                            <!-- Afficher la signature si le devis est déjà accepté -->
+                            <p>Signature du client :</p>
+                            <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
+                            <p>Date : {{ $devis->updated_at }}</p> <!-- Afficher la date actuelle -->
+                        @elseif ($devis->Statut == 'En attente')
+                            <!-- Pad de signature et boutons d'action -->
+                            <div id="signature-pad" class="border p-3 bg-light mb-3">
+                                <canvas id="signature-canvas" style="width: 100%; height: 200px; border: 1px solid #000;"></canvas>
+                                <button id="clear-signature" class="btn btn-secondary mt-2">Effacer</button>
+                            </div>
+                            <form action="{{ route('client.devis.action', $devis->DevisID) }}" method="POST" id="devis-action-form">
+                                @csrf
+                                <input type="hidden" name="signature" id="signature-input">
+                                
+                                <!-- Boutons d'action -->
+                                <button type="submit" name="action" value="accept" class="btn btn-success">
+                                    <i class="fas fa-check"></i> Accepter le devis
+                                </button>
+                                <button type="submit" name="action" value="reject" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Refuser le devis
+                                </button>
+                            </form>
+                        @else
+                            <p>Devis refusé.</p>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Boutons de retour et d'impression -->
-    <div class="text-center">
-        <a href="{{ route('devis.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Retour à la liste
-        </a>
-        <button onclick="printDevis()" class="btn btn-primary">
-            <i class="fas fa-print"></i> Imprimer
-        </button>
-    </div>
-</div>
-
-<!-- Inclure Font Awesome pour les icônes -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-<!-- Script pour imprimer la section spécifique -->
-<script>
-    function printDevis() {
-        // Récupérer la section à imprimer
-        const printableSection = document.getElementById('printable-section').innerHTML;
-
-        // Ouvrir une nouvelle fenêtre
-        const printWindow = window.open('', '', 'height=600,width=800');
-
-        // Écrire le contenu dans la nouvelle fenêtre
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Devis #{{ $devis->Reference }}</title>
-                    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-                    <style>
-                        @media print {
-                            .card {
-                                border: none;
-                                box-shadow: none;
-                            }
-                            .card-header {
-                                background-color: transparent !important;
-                                color: #000 !important;
-                            }
-                            .bg-light {
-                                background-color: transparent !important;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${printableSection}
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            window.close();
-                        };
-                    <\/script>
-                </body>
-            </html>
-        `);
-
-        // Fermer le document pour déclencher l'impression
-        printWindow.document.close();
-    }
-</script>
-@endsection
+        
+        <!-- Inclure Signature Pad -->
+        <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+        
+        <!-- Script pour gérer la signature -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const canvas = document.getElementById('signature-canvas');
+            const signaturePad = new SignaturePad(canvas);
+        
+            // Effacer la signature
+            document.getElementById('clear-signature').addEventListener('click', function (e) {
+                e.preventDefault();
+                signaturePad.clear();
+            });
+        
+            // Soumettre la signature avec le formulaire
+            const form = document.getElementById('devis-action-form');
+            form.addEventListener('submit', function (e) {
+                if (signaturePad.isEmpty()) {
+                    alert('Veuillez signer avant de soumettre.');
+                    e.preventDefault();
+                } else {
+                    // Convertir la signature en base64
+                    const signatureInput = document.getElementById('signature-input');
+                    const signatureData = signaturePad.toDataURL(); // Convertir en base64
+                    signatureInput.value = signatureData;
+                }
+            });
+        });
+        </script>
+        @endsection

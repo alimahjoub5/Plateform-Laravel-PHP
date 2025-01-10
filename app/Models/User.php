@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->PasswordHash;
     }
 
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'ClientID', 'UserID');
+    }
+
     public function analytics()
     {
         return $this->hasMany(Analytics::class, 'UserID');

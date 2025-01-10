@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
 use App\Models\ContactInfo;
+use App\Models\User;
 
 class ContactController extends Controller
 {
@@ -35,5 +36,20 @@ class ContactController extends Controller
 
         // Redirection avec un message de succès
         return redirect()->route('contact')->with('success', 'Votre message a été envoyé avec succès !');
+    }
+
+
+    
+    public function listclient()
+    {
+        // Récupérer tous les clients (utilisateurs avec le rôle "Client")
+        $clients = User::where('Role', 'Client')
+            ->with(['projects' => function ($query) {
+                // Filtrer les projets acceptés par l'admin
+                $query->where('ApprovalStatus', 'Approved')->with(['devis', 'invoices']);
+            }])
+            ->get();
+    
+        return view('client.index', compact('clients'));
     }
 }

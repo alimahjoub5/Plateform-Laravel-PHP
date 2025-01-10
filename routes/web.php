@@ -73,12 +73,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('time-tracking', TimeTrackingController::class);
 
 //-----------------------------------------------------------------------------
-
+Route::get('/clientslist', [ContactController::class, 'listclient'])->name('clients.index');
 // Afficher la liste des factures
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
 // Afficher le formulaire de création d'une facture pour un projet spécifique
 
 Route::get('/invoices/create/{projectID}', [InvoiceController::class, 'create'])->name('invoices.create');
+
+// Créer une facture
+Route::get('/invoices/{id}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
 // Enregistrer une nouvelle facture
 Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');

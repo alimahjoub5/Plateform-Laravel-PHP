@@ -87,4 +87,14 @@ public function client()
     {
         $this->update(['ApprovalStatus' => 'Rejected']);
     }
+
+    public function devis()
+    {
+        return $this->hasMany(Devis::class, 'ProjectID', 'ProjectID');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'ProjectID', 'ProjectID');
+    }
 }
