@@ -1,10 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Models\Client;
+use App\Models\User;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
@@ -13,17 +14,35 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::with('client')->get(); // Charger les clients associés
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
+    
+        // Si l'utilisateur est un admin, afficher toutes les factures
+        if ($user->Role === 'Admin') {
+            $invoices = Invoice::with(['client', 'project'])->get();
+        }
+        // Sinon, afficher uniquement les factures du client connecté
+        else {
+            $invoices = Invoice::with(['client', 'project'])
+                ->where('ClientID', $user->UserID)
+                ->get();
+        }
+    
         return view('invoices.index', compact('invoices'));
     }
 
     /**
      * Afficher le formulaire de création d'une facture.
      */
-    public function create()
+    public function create($projectID)
     {
-        $clients = Client::all(); // Récupérer tous les clients pour le formulaire
-        return view('invoices.create', compact('clients'));
+        // Récupérer le projet associé
+        $project = Project::findOrFail($projectID);
+
+        // Récupérer le client associé au projet
+        $client = $project->client;
+
+        return view('invoices.create', compact('project', 'client'));
     }
 
     /**
@@ -31,16 +50,27 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        // Validation des données
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'amount' => 'required|numeric|min:0',
-            'due_date' => 'required|date',
-            'status' => 'required|in:paid,unpaid',
+            'ProjectID' => 'required|exists:projects,ProjectID',
+            'ClientID' => 'required|exists:users,UserID',
+            'Amount' => 'required|numeric|min:0',
+            'DueDate' => 'required|date',
+            'Status' => 'required|in:Pending,Paid,Overdue',
         ]);
 
-        Invoice::create($request->all());
+        // Créer la facture
+        Invoice::create([
+            'ProjectID' => $request->ProjectID,
+            'ClientID' => $request->ClientID,
+            'Amount' => $request->Amount,
+            'DueDate' => $request->DueDate,
+            'Status' => $request->Status,
+        ]);
 
-        return redirect()->route('invoices.index')->with('success', 'Facture créée avec succès.');
+        // Redirection avec un message de succès
+        return redirect()->route('projects.show', $request->ProjectID)
+                         ->with('success', 'La facture a été créée avec succès.');
     }
 
     /**
@@ -48,6 +78,8 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
+        // Charger les relations client et projet
+        $invoice->load(['client', 'project']);
         return view('invoices.show', compact('invoice'));
     }
 
@@ -56,8 +88,11 @@ class InvoiceController extends Controller
      */
     public function edit(Invoice $invoice)
     {
-        $clients = Client::all(); // Récupérer tous les clients pour le formulaire
-        return view('invoices.edit', compact('invoice', 'clients'));
+        // Récupérer le projet et le client associés
+        $project = $invoice->project;
+        $client = $invoice->client;
+
+        return view('invoices.edit', compact('invoice', 'project', 'client'));
     }
 
     /**
@@ -65,16 +100,23 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
+        // Validation des données
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'amount' => 'required|numeric|min:0',
-            'due_date' => 'required|date',
-            'status' => 'required|in:paid,unpaid',
+            'Amount' => 'required|numeric|min:0',
+            'DueDate' => 'required|date',
+            'Status' => 'required|in:Pending,Paid,Overdue',
         ]);
 
-        $invoice->update($request->all());
+        // Mettre à jour la facture
+        $invoice->update([
+            'Amount' => $request->Amount,
+            'DueDate' => $request->DueDate,
+            'Status' => $request->Status,
+        ]);
 
-        return redirect()->route('invoices.index')->with('success', 'Facture mise à jour avec succès.');
+        // Redirection avec un message de succès
+        return redirect()->route('invoices.show', $invoice->InvoiceID)
+                         ->with('success', 'La facture a été mise à jour avec succès.');
     }
 
     /**
@@ -82,7 +124,11 @@ class InvoiceController extends Controller
      */
     public function destroy(Invoice $invoice)
     {
+        // Supprimer la facture
         $invoice->delete();
-        return redirect()->route('invoices.index')->with('success', 'Facture supprimée avec succès.');
+
+        // Redirection avec un message de succès
+        return redirect()->route('projects.show', $invoice->ProjectID)
+                         ->with('success', 'La facture a été supprimée avec succès.');
     }
 }

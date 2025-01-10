@@ -20,6 +20,27 @@ use App\Http\Controllers\ContactInfoController;
 use App\Http\Controllers\DevisController;
 use App\Http\Controllers\ClientDevisController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PayPalController;
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // Routes pour les devis
+Route::resource('devis', DevisController::class);
+
+
+// Afficher le formulaire de paiement
+Route::get('/paypal/payment/{invoiceId}', [PayPalController::class, 'showPaymentForm'])->name('paypal.show');
+
+// Créer un paiement PayPal
+Route::post('/paypal/create/{invoiceId}', [PayPalController::class, 'createPayment'])->name('paypal.create');
+
+// Traiter un paiement PayPal
+Route::post('/paypal/process/{invoiceId}', [PayPalController::class, 'processPayment'])->name('paypal.process');
+
+// Afficher la page de succès
+Route::get('/payment/success', [PayPalController::class, 'paymentSuccess'])->name('payment.success');
+
 
 Route::get('/payment/{invoiceId}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
 Route::post('/payment/process/{invoiceId}', [PaymentController::class, 'processPayment'])->name('payment.process');
@@ -27,11 +48,7 @@ Route::get('/bro', [PaymentController::class, 'paymentSuccess'])->name('payment.
 
 
 
-// Routes pour les devis
-Route::resource('devis', DevisController::class);
 
-
-Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/contact-info/edit', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
     Route::put('/dashboard/contact-info/update', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
 });
@@ -54,7 +71,31 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('tasks', TaskController::class);
     Route::resource('time-tracking', TimeTrackingController::class);
-    Route::resource('invoices', InvoiceController::class);
+
+//-----------------------------------------------------------------------------
+
+// Afficher la liste des factures
+Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+// Afficher le formulaire de création d'une facture pour un projet spécifique
+
+Route::get('/invoices/create/{projectID}', [InvoiceController::class, 'create'])->name('invoices.create');
+
+// Enregistrer une nouvelle facture
+Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
+
+// Afficher les détails d'une facture
+Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
+
+// Afficher le formulaire de modification d'une facture
+Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
+
+// Mettre à jour une facture
+Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
+
+// Supprimer une facture
+Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
+
+
 //-----------------------------------------------------------------------------------------------
 // Routes pour les notifications
 Route::resource('notifications', NotificationController::class)->except(['edit', 'update']);

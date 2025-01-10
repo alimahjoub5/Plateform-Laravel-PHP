@@ -3,49 +3,90 @@
 @section('content')
 <div class="container">
     <h1>Liste des factures</h1>
-    <a href="{{ route('invoices.create') }}" class="btn btn-primary mb-3">Créer une facture</a>
 
+    <!-- Bouton pour créer une facture (visible uniquement pour l'admin) -->
+    @if (Auth::user()->Role === 'Admin')
+        <a href="{{ route('invoices.create', ['projectID' => 1]) }}" class="btn btn-primary mb-3">
+            Créer une facture
+        </a>
+    @endif
+
+    <!-- Afficher les messages de succès -->
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Client</th>
-                <th>Montant</th>
-                <th>Date d'échéance</th>
-                <th>Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($invoices as $invoice)
+    <!-- Tableau des factures -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>{{ $invoice->InvoiceID }}</td>
-                    <td>{{ $invoice->client->name }}</td> <!-- Assurez-vous que la colonne "name" existe dans la table "users" -->
-                    <td>{{ $invoice->Amount }} €</td> <!-- Utilisez "Amount" au lieu de "amount" -->
-                    <td>{{ $invoice->DueDate ? \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') : 'Non définie' }}</td> <!-- Utilisez "DueDate" et formatez-la -->
-                    <td>{{ $invoice->Status }}</td> <!-- Utilisez "Status" au lieu de "status" -->
-                    <td>
-                        <a href="{{ route('invoices.show', $invoice->InvoiceID) }}" class="btn btn-info">Voir</a>
-                        <a href="{{ route('invoices.edit', $invoice->InvoiceID) }}" class="btn btn-warning">Modifier</a>
-                        <form action="{{ route('invoices.destroy', $invoice->InvoiceID) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?')">Supprimer</button>
-                        </form>
-                        <!-- Bouton "Payer" -->
-                        @if($invoice->Status === 'Pending') <!-- Utilisez "Status" au lieu de "status" -->
-                            <a href="{{ route('payment.form', $invoice->InvoiceID) }}" class="btn btn-success mt-2">Payer</a>
-                        @endif
-                    </td>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Projet</th>
+                    <th>Montant (€)</th>
+                    <th>Date d'échéance</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($invoices as $invoice)
+                    <tr>
+                        <td>{{ $invoice->InvoiceID }}</td>
+                        <td>{{ $invoice->client->Username }}</td>
+                        <td>{{ $invoice->project->Title }}</td>
+                        <td>{{ number_format($invoice->Amount, 2, ',', ' ') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') }}</td>
+                        <td>
+                            <span class="badge 
+                                @if($invoice->Status == 'Pending') badge-warning
+                                @elseif($invoice->Status == 'Paid') badge-success
+                                @elseif($invoice->Status == 'Overdue') badge-danger
+                                @endif">
+                                {{ $invoice->Status }}
+                            </span>
+                        </td>
+                        <td>
+                            <!-- Bouton Voir -->
+                            <a href="{{ route('invoices.show', $invoice->InvoiceID) }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i>
+                            </a>
+
+                            <!-- Bouton Modifier (visible uniquement pour l'admin) -->
+                            @if (Auth::user()->Role === 'Admin')
+                                <a href="{{ route('invoices.edit', $invoice->InvoiceID) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            @endif
+
+                            <!-- Bouton Supprimer (visible uniquement pour l'admin) -->
+                            @if (Auth::user()->Role === 'Admin')
+                                <form action="{{ route('invoices.destroy', $invoice->InvoiceID) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr ?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            <!-- Bouton Payer (visible uniquement pour le client si la facture est en attente) -->
+                            @if (Auth::user()->Role === 'Client' && $invoice->Status === 'Pending')
+                                <a href="{{ route('payment.form', $invoice->InvoiceID) }}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-credit-card"></i> Payer
+                                </a>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<!-- Inclure Font Awesome pour les icônes -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 @endsection

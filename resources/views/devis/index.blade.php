@@ -58,6 +58,13 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
+
+                        <!-- Bouton Ajouter une facture (visible seulement si le statut est "Accepté") -->
+                        @if($devi->Statut == 'Accepté')
+                            <a href="{{ route('invoices.create', ['projectID' => $devi->ProjectID,'ClientID' => $devi->client->UserID]) }}" class="btn btn-sm btn-success" title="Ajouter une facture">
+                                <i class="fas fa-file-invoice"></i> Facture
+                            </a>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
