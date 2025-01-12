@@ -73,6 +73,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('time-tracking', TimeTrackingController::class);
 
 //-----------------------------------------------------------------------------
+
+// routes/web.php
+Route::get('/chat/messages', [ChatController::class, 'getMessages']);
+Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+
+
+//-----------------------------------------------------------------------------
+
 Route::get('/clientslist', [ContactController::class, 'listclient'])->name('clients.index');
 // Afficher la liste des factures
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
