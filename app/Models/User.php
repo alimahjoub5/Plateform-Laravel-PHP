@@ -59,4 +59,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Blog::class, 'AuthorID', 'UserID');
     }
+
+    // Dans le modèle User
+public function isAdmin() {
+    return $this->role === 'admin';
+}
+
+public function isClient() {
+    return $this->role === 'client';
+}
 }
