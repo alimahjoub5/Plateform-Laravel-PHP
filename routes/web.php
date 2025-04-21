@@ -1,207 +1,167 @@
 <?php
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\TaskController;
-use App\Http\Controllers\TimeTrackingController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\TestimonialController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\AnalyticsController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ContactInfoController;
-use App\Http\Controllers\DevisController;
-use App\Http\Controllers\ClientDevisController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PayPalController;
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    UserController,
+    ProjectController,
+    TaskController,
+    TimeTrackingController,
+    InvoiceController,
+    NotificationController,
+    PortfolioController,
+    BlogController,
+    TestimonialController,
+    ServiceController,
+    AnalyticsController,
+    Auth\LoginController,
+    Auth\RegisterController,
+    ProfileController,
+    AdminController,
+    ContactController,
+    DashboardController,
+    ContactInfoController,
+    DevisController,
+    ClientDevisController,
+    PaymentController,
+    PayPalController,
+    MeetingController,
+    ChatController
+};
+use App\Models\User;
+use App\Models\Service;
 
-Route::middleware(['auth'])->group(function () {
+// ------------------ ROUTES PUBLIQUES ------------------
 
-    // Routes pour les devis
-Route::resource('devis', DevisController::class);
+// Page d'accueil
+Route::get('/', function () {
+    $teamMembers = User::where('Role', '!=', 'Client')->get();
+    $services = Service::where('IsAvailable', true)->get();
+    return view('welcome', compact('teamMembers', 'services'));
+})->name('default');
 
-
-// Afficher le formulaire de paiement
-Route::get('/paypal/payment/{invoiceId}', [PayPalController::class, 'showPaymentForm'])->name('paypal.show');
-
-// Créer un paiement PayPal
-Route::post('/paypal/create/{invoiceId}', [PayPalController::class, 'createPayment'])->name('paypal.create');
-
-// Traiter un paiement PayPal
-Route::post('/paypal/process/{invoiceId}', [PayPalController::class, 'processPayment'])->name('paypal.process');
-
-// Afficher la page de succès
-Route::get('/payment/success', [PayPalController::class, 'paymentSuccess'])->name('payment.success');
-
-
-Route::get('/payment/{invoiceId}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
-Route::post('/payment/process/{invoiceId}', [PaymentController::class, 'processPayment'])->name('payment.process');
-Route::get('/bro', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
-
-
-
-
-    Route::get('/dashboard/contact-info/edit', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
-    Route::put('/dashboard/contact-info/update', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
-});
-// Route pour afficher la page de contact
+// Page de contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-
-// Route pour traiter l'envoi du formulaire de contact
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
-// Routes d'authentification
+// Authentification
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Blogs publics
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
 
-Route::middleware('auth')->group(function () {
+// Autres pages publiques
+Route::get('/home')->name('home');
+Route::get('/temoignages', [TestimonialController::class, 'index'])->name('testimonials');
+Route::get('/portPub', [PortfolioController::class, 'affiche'])->name('portfolios.public');
+Route::get('/tags', [PortfolioController::class, 'getTags'])->name('tags.autocomplete');
+
+// ------------------ ROUTES PROTÉGÉES ------------------
+
+Route::middleware(['auth'])->group(function () {
+
+    // Dashboard contact info
+    Route::get('/dashboard/contact-info/edit', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
+    Route::put('/dashboard/contact-info/update', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
+
+    // Users, Tasks, Time tracking
     Route::resource('users', UserController::class);
     Route::resource('tasks', TaskController::class);
     Route::resource('time-tracking', TimeTrackingController::class);
 
-//-----------------------------------------------------------------------------
+    // Projets
+    Route::resource('projects', ProjectController::class);
+    Route::get('/client/request', [ProjectController::class, 'requestForm'])->name('client.request');
+    Route::post('/client/request', [ProjectController::class, 'submitRequest'])->name('client.submitRequest');
+    Route::get('/client/services', [ProjectController::class, 'clientServices'])->name('client.services');
+    Route::post('/projects/{id}/cancel', [ProjectController::class, 'cancelProject'])->name('projects.cancel');
 
-// routes/web.php
-Route::get('/chat/messages', [ChatController::class, 'getMessages']);
-Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    // Devis
+    Route::resource('devis', DevisController::class);
+    Route::post('/devis/{devis}/action', [DevisController::class, 'action'])->name('client.devis.action');
 
+    // Devis côté client
+    Route::prefix('client/devis')->name('client.devis.')->group(function () {
+        Route::get('/', [ClientDevisController::class, 'index'])->name('index');
+        Route::get('/{devis}', [ClientDevisController::class, 'show'])->name('show');
+        Route::post('/{devis}/accept', [ClientDevisController::class, 'accept'])->name('accept');
+        Route::post('/{devis}/reject', [ClientDevisController::class, 'reject'])->name('reject');
+        Route::post('/{devis}/request-changes', [ClientDevisController::class, 'requestChanges'])->name('requestChanges');
+        Route::get('/{devis}/download', [ClientDevisController::class, 'download'])->name('download');
+    });
 
-//-----------------------------------------------------------------------------
+    // Paiement
+    Route::get('/paypal/payment/{invoiceId}', [PayPalController::class, 'showPaymentForm'])->name('paypal.show');
+    Route::post('/paypal/create/{invoiceId}', [PayPalController::class, 'createPayment'])->name('paypal.create');
+    Route::post('/paypal/process/{invoiceId}', [PayPalController::class, 'processPayment'])->name('paypal.process');
+    Route::get('/payment/success', [PayPalController::class, 'paymentSuccess'])->name('payment.success');
 
-Route::get('/clientslist', [ContactController::class, 'listclient'])->name('clients.index');
-// Afficher la liste des factures
-Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
-// Afficher le formulaire de création d'une facture pour un projet spécifique
+    Route::get('/payment/{invoiceId}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+    Route::post('/payment/process/{invoiceId}', [PaymentController::class, 'processPayment'])->name('payment.process');
+    Route::get('/bro', [PaymentController::class, 'paymentSuccess']);
 
-Route::get('/invoices/create/{projectID}', [InvoiceController::class, 'create'])->name('invoices.create');
+    // Factures
+    Route::prefix('invoices')->name('invoices.')->group(function () {
+        Route::get('/', [InvoiceController::class, 'index'])->name('index');
+        Route::get('/create/{projectID}', [InvoiceController::class, 'create'])->name('create');
+        Route::post('/', [InvoiceController::class, 'store'])->name('store');
+        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
+        Route::get('/{id}/download', [InvoiceController::class, 'download'])->name('download');
+        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
+        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
+        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
+    });
 
-// Créer une facture
-Route::get('/invoices/{id}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+    // Notifications
+    Route::resource('notifications', NotificationController::class)->except(['edit', 'update']);
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 
-// Enregistrer une nouvelle facture
-Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
-
-// Afficher les détails d'une facture
-Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
-
-// Afficher le formulaire de modification d'une facture
-Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
-
-// Mettre à jour une facture
-Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
-
-// Supprimer une facture
-Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
-
-
-//-----------------------------------------------------------------------------------------------
-// Routes pour les notifications
-Route::resource('notifications', NotificationController::class)->except(['edit', 'update']);
-Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
-//-----------------------------------------------------------------------------------------------
-Route::resource('portfolios', PortfolioController::class);
-
+    // Portfolios, Témoignages, Services
+    Route::resource('portfolios', PortfolioController::class);
     Route::resource('testimonials', TestimonialController::class);
-
     Route::resource('services', ServiceController::class);
-    //-----------------------------------------------------------
+
+    // Analytics
     Route::post('/analytics/log', [AnalyticsController::class, 'logAnalytics']);
     Route::get('/analytics/user/{userId}', [AnalyticsController::class, 'getAnalyticsByUser']);
     Route::get('/analytics/device/{deviceType}', [AnalyticsController::class, 'getAnalyticsByDeviceType']);
     Route::get('/analytics/{analyticsId}/user', [AnalyticsController::class, 'getAnalyticsWithUser']);
     Route::delete('/analytics/{analyticsId}', [AnalyticsController::class, 'deleteAnalytics']);
-    
+
+    // Admin
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/projects', [AdminController::class, 'index'])->name('admin.projects');
+        Route::get('/projects/{id}/show', [AdminController::class, 'show'])->name('admin.projects.show');
+        Route::post('/projects/{id}/approve', [AdminController::class, 'approveProject'])->name('admin.projects.approve');
+        Route::post('/projects/{id}/reject', [AdminController::class, 'rejectProject'])->name('admin.projects.reject');
+        Route::post('/projects/{id}/assign', [AdminController::class, 'assignProject'])->name('admin.projects.assign');
     });
-    //-----------------------------------------------------------
+
+    // Profil utilisateur
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-});
 
-Route::middleware('auth')->group(function () {
-    // Route pour la page de l'administrateur
-    Route::get('/admin/projects', [AdminController::class, 'index'])->name('admin.projects');
-    Route::get('/admin/projects/{id}/show', [AdminController::class, 'show'])->name('admin.projects.show'); // Ajouter {id}
+    // Messages clients
+    Route::get('/clientslist', [ContactController::class, 'listclient'])->name('clients.index');
 
-    // Routes pour les opérations de l'administrateur
-    Route::post('/admin/projects/{id}/approve', [AdminController::class, 'approveProject'])->name('admin.projects.approve');
-    Route::post('/admin/projects/{id}/reject', [AdminController::class, 'rejectProject'])->name('admin.projects.reject');
-    Route::post('/admin/projects/{id}/assign', [AdminController::class, 'assignProject'])->name('admin.projects.assign');
-});
+    // Chat
+    Route::get('/chat/messages', [ChatController::class, 'getMessages']);
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
 
-
-Route::middleware('auth')->group(function () {
-        // Routes CRUD pour les projets
-        Route::resource('projects', ProjectController::class);
-        // Routes supplémentaires
-        Route::get('/client/request', [ProjectController::class, 'requestForm'])->name('client.request');
-        Route::post('/client/request', [ProjectController::class, 'submitRequest'])->name('client.submitRequest');
-        // Route pour afficher les services demandés par le client
-        Route::get('/client/services', [ProjectController::class, 'clientServices'])->name('client.services');
-        Route::post('/projects/{id}/cancel', [ProjectController::class, 'cancelProject'])->name('projects.cancel');
-});    
-
-use App\Models\User; // Importez le modèle User
-use App\Models\Service; // Importez le modèle Service
-
-Route::get('/', function () {
-    // Récupérer les utilisateurs dont le rôle n'est pas "Client"
-    $teamMembers = User::where('Role', '!=', 'Client')->get();
-
-    // Récupérer les services disponibles
-    $services = Service::where('IsAvailable', true)->get();
-
-    // Passer les utilisateurs et les services à la vue "welcome"
-    return view('welcome', [
-        'teamMembers' => $teamMembers,
-        'services' => $services,
-    ]);
-})->name('default');
-
-
-// Routes publiques
-Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
-Route::get('/home')->name('home');
-Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
-Route::get('/temoignages', [TestimonialController::class, 'index'])->name('testimonials');
-Route::get('portPub', [PortfolioController::class, 'affiche'])->name('portfolios.public');
-
-// Routes protégées par authentification
-Route::middleware('auth')->group(function () {
+    // Blog (admin)
     Route::get('/test', [BlogController::class, 'create'])->name('blogs.create');
     Route::post('/blogs', [BlogController::class, 'store'])->name('blogs.store');
     Route::get('/blogs/{blog}/edit', [BlogController::class, 'edit'])->name('blogs.edit');
     Route::get('/dashboard/blogs', [BlogController::class, 'dashboard'])->name('blogs.dashboard');
     Route::put('/blogs/{blog}', [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
-});
-Route::get('/tags', [PortfolioController::class, 'getTags'])->name('tags.autocomplete');
 
-
-// Routes pour les devis côté client
-Route::middleware(['auth'])->group(function () {
-    Route::get('/client/devis', [ClientDevisController::class, 'index'])->name('client.devis.index');
-    Route::get('/client/devis/{devis}', [ClientDevisController::class, 'show'])->name('client.devis.show');
-    Route::post('/client/devis/{devis}/accept', [ClientDevisController::class, 'accept'])->name('client.devis.accept');
-    Route::post('/client/devis/{devis}/reject', [ClientDevisController::class, 'reject'])->name('client.devis.reject');
-    Route::post('/client/devis/{devis}/request-changes', [ClientDevisController::class, 'requestChanges'])->name('client.devis.requestChanges');
-    
-    // Ajoutez cette route pour le téléchargement du devis
-    Route::get('/client/devis/{devis}/download', [ClientDevisController::class, 'download'])->name('client.devis.download');
-    Route::post('/devis/{devis}/action', [DevisController::class, 'action'])
-    ->name('client.devis.action');
+    // Meetings
+    Route::get('/meetings/calendar', [MeetingController::class, 'calendar'])->name('meetings.calendar');
+    Route::get('/meetings/calendar-data', [MeetingController::class, 'calendarData']);
 });

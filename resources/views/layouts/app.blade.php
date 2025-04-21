@@ -13,6 +13,12 @@
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/fr.min.js"></script> <!-- Pour la localisation en français -->
     <script>
         // Initialiser CKEditor sur le textarea avec l'id "Content"
         CKEDITOR.replace('Content', {
@@ -138,6 +144,11 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('meetings.calendar') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-calendar-alt mr-3"></i> Calendrier des Réunions
+                    </a>
+                </li>
         
 <!-- Lien "Liste des utilisateurs" -->
 <li>
@@ -162,6 +173,12 @@
                 <li>
                     <a href="{{ route('client.services') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
                         <i class="fas fa-cogs mr-3"></i> Mes services
+                    </a>
+                </li>
+                <!-- Lien "Reunion" -->
+                <li>
+                    <a href="{{ route('client.services') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
+                        <i class="fas fa-calendar-alt mr-3"></i> Réunions
                     </a>
                 </li>
         
@@ -282,5 +299,6 @@
             }
         });
     </script>
+    
 </body>
 </html>

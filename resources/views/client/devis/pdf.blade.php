@@ -6,98 +6,103 @@
         /* Réglages généraux pour le format A4 */
         @page {
             size: A4;
-            margin: 20mm; /* Marges standard pour l'impression */
+            margin: 15mm; /* Marges optimisées pour l'impression */
         }
         body {
             font-family: Arial, sans-serif;
-            margin: 0 auto;
+            margin: 0;
             width: 100%;
-            max-width: 800px; /* Largeur maximale pour le contenu */
-            color: #000; /* Texte en noir */
-            line-height: 1.4;
-            font-size: 12px; /* Taille de police plus petite */
+            max-width: 800px;
+            color: #333;
+            line-height: 1.5;
+            font-size: 12px;
+            padding: 0 10mm;
         }
         header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .company-logo {
-            max-width: 80px; /* Logo plus petit */
+            max-width: 100px;
             margin-bottom: 10px;
         }
         .company-info {
-            margin-bottom: 15px;
+            font-size: 12px;
+            margin-bottom: 20px;
         }
         .company-info p {
-            margin: 3px 0; /* Espacement réduit */
+            margin: 4px 0;
         }
         h1 {
+            font-size: 20px;
+            font-weight: bold;
             text-align: center;
-            font-size: 16px; /* Taille de police plus petite */
-            margin-bottom: 10px;
-            color: #000; /* Titre en noir */
+            margin-bottom: 15px;
+            color: #000;
         }
         h2 {
-            font-size: 14px; /* Taille de police plus petite */
-            color: #000; /* Titre en noir */
-            border-bottom: 1px solid #000; /* Bordure noire */
+            font-size: 14px;
+            color: #000;
+            border-bottom: 2px solid #000;
             padding-bottom: 3px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .section {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .section p {
-            margin: 5px 0; /* Espacement réduit */
+            margin: 8px 0;
         }
         .section strong {
-            color: #000; /* Texte en noir */
+            font-weight: bold;
+            color: #333;
         }
         .totals {
-            border: 1px solid #000; /* Bordure noire */
-            padding: 10px;
-            margin-bottom: 10px;
+            border: 1px solid #000;
+            padding: 15px;
+            margin-bottom: 25px;
         }
         .totals table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         .totals table td {
-            padding: 5px;
-            border-top: 1px solid #000; /* Bordure noire */
+            padding: 8px;
+            border-top: 1px solid #ddd;
+            text-align: right;
         }
         .totals table td:first-child {
             font-weight: bold;
-            text-align: right;
         }
         .conditions {
-            border: 1px solid #000; /* Bordure noire */
-            padding: 10px;
-            margin-bottom: 10px;
+            border: 1px solid #000;
+            padding: 15px;
+            margin-bottom: 25px;
         }
         .signature {
-            border: 1px solid #000; /* Bordure noire */
-            padding: 10px;
-            margin-bottom: 10px;
+            border: 1px solid #000;
+            padding: 15px;
+            margin-bottom: 30px;
         }
         .signature p {
             margin: 0;
         }
         .signature div {
-            margin-top: 10px;
+            margin-top: 15px;
         }
         footer {
             text-align: center;
-            margin-top: 15px;
-            font-size: 10px; /* Taille de police plus petite */
-            color: #000; /* Texte en noir */
+            margin-top: 20px;
+            font-size: 10px;
+            color: #000;
         }
         @media print {
             body {
-                margin: 20mm; /* Marges pour l'impression */
+                margin: 0;
             }
             header, footer {
-                display: none; /* Masquer le header et le footer à l'impression */
+                display: none;
             }
         }
     </style>
@@ -112,6 +117,7 @@
             <p>SIRET: {{ $contactInfo->siret ?? 'Non spécifié' }}</p>
         </div>
     </header>
+
     <main>
         <h1>Devis #{{ $devis->Reference }}</h1>
 
@@ -174,21 +180,20 @@
             </div>
         </div>
 
-<!-- Signature -->
-<!-- Signature -->
-<div class="signature">
-    <h2>Signature</h2>
-    <p>Le client reconnaît avoir pris connaissance de ce devis et accepte les conditions générales.</p>
-    <div>
-        <!-- Afficher la signature si elle existe -->
-        @if ($devis->signature)
-            <p>Signature du client :</p>
-            <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
-        @endif
-        <p>Date : {{ $devis->updated_at }}</p> <!-- Afficher la date actuelle -->
-    </div>
-</div>
+        <!-- Signature -->
+        <div class="signature">
+            <h2>Signature</h2>
+            <p>Le client reconnaît avoir pris connaissance de ce devis et accepte les conditions générales.</p>
+            <div>
+                @if ($devis->signature)
+                    <p>Signature du client :</p>
+                    <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 20%; height: auto; border: 0;">
+                @endif
+                <p>Date : {{ $devis->updated_at }}</p>
+            </div>
+        </div>
     </main>
+
     <footer>
         <p>Contact : {{ $contactInfo->email }} | Téléphone : {{ $contactInfo->Phone }}</p>
     </footer>
