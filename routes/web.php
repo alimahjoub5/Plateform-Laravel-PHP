@@ -162,6 +162,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
 
     // Meetings
+    Route::get('/schedule', [MeetingController::class, 'index'])->name('meetings.index');
+    Route::get('/meetings', [MeetingController::class, 'create'])->name('meetings.create');
+    Route::post('/meetings', [MeetingController::class, 'store'])->name('meetings.store');
+    Route::get('/meetings/show', [MeetingController::class, 'show'])->name('meetings.show');
+    Route::put('/meetings', [MeetingController::class, 'edit'])->name('meetings.edit');
+    Route::delete('/meetings', [MeetingController::class, 'destroy'])->name('meetings.destroy');
     Route::get('/meetings/calendar', [MeetingController::class, 'calendar'])->name('meetings.calendar');
     Route::get('/meetings/calendar-data', [MeetingController::class, 'calendarData']);
 });

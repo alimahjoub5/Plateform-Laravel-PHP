@@ -72,4 +72,11 @@ public function isAdmin() {
 public function isClient() {
     return $this->role === 'client';
 }
+
+
+public function isEmployee()
+{
+    return in_array($this->Role, ['developer', 'designer', 'chef_projet']);
+}
+
 }
