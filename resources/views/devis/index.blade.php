@@ -60,11 +60,24 @@
                         </form>
 
                         <!-- Bouton Ajouter une facture (visible seulement si le statut est "Accepté") -->
-                        @if($devi->Statut == 'Accepté')
-                            <a href="{{ route('invoices.create', ['projectID' => $devi->ProjectID,'ClientID' => $devi->client->UserID]) }}" class="btn btn-sm btn-success" title="Ajouter une facture">
+                        @php
+                        $totalFactures = \App\Models\Invoice::where('ProjectID', $devi->ProjectID)->sum('Amount');
+                        $budgetProjet = $devi->project->Budget;
+                    @endphp
+                    
+                    @if($devi->Statut == 'Accepté')
+                        @if($totalFactures < $budgetProjet)
+                            <a href="{{ route('invoices.create', ['projectID' => $devi->ProjectID, 'ClientID' => $devi->client->UserID]) }}"
+                               class="btn btn-sm btn-success" title="Ajouter une facture">
                                 <i class="fas fa-file-invoice"></i> Facture
                             </a>
+                        @else
+                            <button class="btn btn-sm btn-secondary" disabled title="Budget atteint">
+                                <i class="fas fa-ban"></i> Budget atteint
+                            </button>
                         @endif
+                    @endif
+                    
                     </td>
                 </tr>
                 @endforeach

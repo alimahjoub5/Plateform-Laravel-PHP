@@ -19,10 +19,46 @@ class MeetingController extends Controller
     // Afficher le formulaire de création d'une réunion
     public function create()
     {
-        $projects = Project::all();
-        $users = User::all();
+        $authUser = auth()->user();
+    
+        // Initialisation des projets
+        if ($authUser->isClient()) {
+            // Le client ne voit que ses propres projets approuvés
+            $projects = Project::where('ClientID', $authUser->UserID)
+                ->where('ApprovalStatus', 'Approved')
+                ->get();
+        } elseif ($authUser->isEmployee()) {
+            // L'employé ne voit que les projets où il est assigné à une tâche
+            $projects = Project::whereHas('tasks', function ($q) use ($authUser) {
+                    $q->where('AssignedTo', $authUser->UserID);
+                })
+                ->where('ApprovalStatus', 'Approved')
+                ->get();
+        } else {
+            // Admin ou rôle spécial → tous les projets approuvés
+            $projects = Project::where('ApprovalStatus', 'Approved')->get();
+        }
+    
+        // 🔎 Filtrer les utilisateurs liés aux projets
+        $projectIds = $projects->pluck('ProjectID');
+    
+        // Clients de ces projets
+        $clientIds = Project::whereIn('ProjectID', $projectIds)->pluck('ClientID');
+    
+        // Employés assignés à des tâches de ces projets
+        $taskUserIds = \App\Models\Task::whereIn('ProjectID', $projectIds)->pluck('AssignedTo');
+    
+        // Fusionner et retirer les doublons
+        $userIds = $clientIds->merge($taskUserIds)->unique();
+    
+        // Charger uniquement les utilisateurs pertinents
+        $users = User::whereIn('UserID', $userIds)->get();
+    
         return view('meetings.create', compact('projects', 'users'));
     }
+    
+    
+    
 
     // Enregistrer une nouvelle réunion
     public function store(Request $request)
