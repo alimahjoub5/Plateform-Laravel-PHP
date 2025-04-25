@@ -10,12 +10,23 @@ class Notification extends Model
     protected $primaryKey = 'NotificationID';
 
     protected $fillable = [
-        'UserID', 'Message', 'IsRead'
+        'UserID', 'Message', 'IsRead', 'Type'
     ];
 
     // Relationships
     public function user()
     {
         return $this->belongsTo(User::class, 'UserID');
+    }
+
+    // Scopes
+    public function scopeUnread($query)
+    {
+        return $query->where('IsRead', false);
+    }
+
+    public function scopeByType($query, $type)
+    {
+        return $query->where('Type', $type);
     }
 }

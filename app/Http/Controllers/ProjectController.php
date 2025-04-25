@@ -39,15 +39,6 @@ class ProjectController extends Controller
         // Créer le projet
         $project = Project::create($validatedData);
 
-        // Envoyer une notification à l'Administrateur
-        $Admin = User::where('role', 'Admin')->first(); // Trouver l'Administrateur
-        if ($Admin) {
-            Notification::create([
-                'UserID' => $Admin->UserID,
-                'Message' => 'Un nouveau projet "' . $project->Title . '" a été créé par le client.',
-            ]);
-        }
-
         return redirect()->route('projects.index')->with('success', 'Projet créé avec succès.');
     }
 
@@ -83,12 +74,6 @@ class ProjectController extends Controller
 
         $project->update($validatedData);
 
-        // Envoyer une notification au client
-        Notification::create([
-            'UserID' => $project->ClientID,
-            'Message' => 'Le projet "' . $project->Title . '" a été mis à jour par l\'Administrateur.',
-        ]);
-
         return redirect()->route('projects.index')->with('success', 'Projet mis à jour avec succès.');
     }
 
@@ -96,13 +81,6 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::findOrFail($id);
-
-        // Envoyer une notification au client
-        Notification::create([
-            'UserID' => $project->ClientID,
-            'Message' => 'Le projet "' . $project->Title . '" a été supprimé par l\'Administrateur.',
-        ]);
-
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Projet supprimé avec succès.');
     }
@@ -110,20 +88,13 @@ class ProjectController extends Controller
     // Affecter un projet à un utilisateur
     public function assignProject(Request $request, $projectId)
     {
-        $project = Project::findOrFail($projectId);
-
+        // Utiliser une seule requête pour charger le projet avec la relation client
+        $project = Project::with('client')->findOrFail($projectId);
         $userId = $request->input('user_id');
-        $user = User::findOrFail($userId);
 
         // Affecter le projet à l'utilisateur
         $project->ClientID = $userId;
         $project->save();
-
-        // Envoyer une notification au client
-        Notification::create([
-            'UserID' => $userId,
-            'Message' => 'Le projet "' . $project->Title . '" vous a été affecté par l\'Administrateur.',
-        ]);
 
         return redirect()->route('projects.show', $projectId)->with('success', 'Projet affecté avec succès.');
     }
@@ -131,14 +102,9 @@ class ProjectController extends Controller
     // Accepter un projet
     public function approveProject($id)
     {
-        $project = Project::findOrFail($id);
+        // Charger le projet avec la relation client en une seule requête
+        $project = Project::with('client')->findOrFail($id);
         $project->approve();
-
-        // Envoyer une notification au client
-        Notification::create([
-            'UserID' => $project->ClientID,
-            'Message' => 'Le projet "' . $project->Title . '" a été approuvé par l\'Administrateur.',
-        ]);
 
         return redirect()->route('projects.show', $id)->with('success', 'Projet approuvé avec succès.');
     }
@@ -146,14 +112,9 @@ class ProjectController extends Controller
     // Refuser un projet
     public function rejectProject($id)
     {
-        $project = Project::findOrFail($id);
+        // Charger le projet avec la relation client en une seule requête
+        $project = Project::with('client')->findOrFail($id);
         $project->reject();
-
-        // Envoyer une notification au client
-        Notification::create([
-            'UserID' => $project->ClientID,
-            'Message' => 'Le projet "' . $project->Title . '" a été refusé par l\'Administrateur.',
-        ]);
 
         return redirect()->route('projects.show', $id)->with('success', 'Projet refusé avec succès.');
     }
@@ -175,21 +136,12 @@ class ProjectController extends Controller
         ]);
 
         // Ajouter des valeurs par défaut
-        $validatedData['ClientID'] = auth()->id(); // ID du client connecté
-        $validatedData['Status'] = 'Pending'; // Statut par défaut
-        $validatedData['ApprovalStatus'] = 'Pending'; // Statut d'approbation par défaut
+        $validatedData['ClientID'] = auth()->id();
+        $validatedData['Status'] = 'Pending';
+        $validatedData['ApprovalStatus'] = 'Pending';
 
         // Créer le projet
         $project = Project::create($validatedData);
-
-        // Envoyer une notification à l'Administrateur
-        $Admin = User::where('role', 'Admin')->first(); // Trouver l'Administrateur
-        if ($Admin) {
-            Notification::create([
-                'UserID' => $Admin->UserID,
-                'Message' => 'Un nouveau projet "' . $project->Title . '" a été soumis par le client.',
-            ]);
-        }
 
         return redirect()->route('client.request')->with('success', 'Votre demande de projet a été soumise avec succès.');
     }
@@ -234,15 +186,6 @@ class ProjectController extends Controller
 
         // Mettre à jour le statut du projet
         $project->update(['Status' => 'Cancelled']);
-
-        // Envoyer une notification à l'Administrateur
-        $Admin = User::where('role', 'Admin')->first(); // Trouver l'Administrateur
-        if ($Admin) {
-            Notification::create([
-                'UserID' => $Admin->UserID,
-                'Message' => 'Le projet "' . $project->Title . '" a été annulé par le client.',
-            ]);
-        }
 
         return redirect()->route('client.services')->with('success', 'Le projet a été annulé avec succès.');
     }
