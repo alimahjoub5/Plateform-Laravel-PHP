@@ -67,7 +67,47 @@ class AnalyticsController extends Controller
         ));
     }
 
+    public function getAnalytics(Request $request)
+    {
+        $startDate = $request->input('start_date', now()->subDays(30));
+        $endDate = $request->input('end_date', now());
 
+        // Récupérer toutes les données analytiques en une seule requête
+        $analytics = Analytics::whereBetween('created_at', [$startDate, $endDate])
+            ->with('user')
+            ->get();
+
+        // Calculer les statistiques à partir des données récupérées
+        $totalVisits = $analytics->count();
+        $uniqueVisitors = $analytics->pluck('UserID')->unique()->count();
+        $averageTimeOnSite = $analytics->avg('TimeSpent');
+        $bounceRate = $analytics->where('TimeSpent', '<', 30)->count() / $totalVisits * 100;
+
+        // Préparer les données pour les graphiques
+        $visitsByDay = $analytics->groupBy(function($item) {
+            return $item->created_at->format('Y-m-d');
+        })->map->count();
+
+        $visitsByPage = $analytics->groupBy('Page')->map->count();
+
+        $visitsByUser = $analytics->groupBy('UserID')
+            ->map(function($group) {
+                return [
+                    'count' => $group->count(),
+                    'user' => $group->first()->user
+                ];
+            });
+
+        return response()->json([
+            'total_visits' => $totalVisits,
+            'unique_visitors' => $uniqueVisitors,
+            'average_time_on_site' => $averageTimeOnSite,
+            'bounce_rate' => $bounceRate,
+            'visits_by_day' => $visitsByDay,
+            'visits_by_page' => $visitsByPage,
+            'visits_by_user' => $visitsByUser
+        ]);
+    }
 
     /**
      * Enregistre une nouvelle entrée analytique.
