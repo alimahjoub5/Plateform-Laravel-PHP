@@ -31,6 +31,57 @@
                     </div>
                 </div>
 
+                <!-- Champ FirstName -->
+                <div class="mb-6">
+                    <label for="FirstName" class="block text-sm font-medium text-gray-700">Prénom</label>
+                    <div class="mt-1">
+                        <input id="FirstName" name="FirstName" type="text" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('FirstName') border-red-500 @enderror"
+                            value="{{ old('FirstName') }}">
+                        @error('FirstName')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Champ LastName -->
+                <div class="mb-6">
+                    <label for="LastName" class="block text-sm font-medium text-gray-700">Nom</label>
+                    <div class="mt-1">
+                        <input id="LastName" name="LastName" type="text" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('LastName') border-red-500 @enderror"
+                            value="{{ old('LastName') }}">
+                        @error('LastName')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Champ PhoneNumber -->
+                <div class="mb-6">
+                    <label for="PhoneNumber" class="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
+                    <div class="mt-1">
+                        <input id="PhoneNumber" name="PhoneNumber" type="text"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('PhoneNumber') border-red-500 @enderror"
+                            value="{{ old('PhoneNumber') }}">
+                        @error('PhoneNumber')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Champ Address -->
+                <div class="mb-6">
+                    <label for="Address" class="block text-sm font-medium text-gray-700">Adresse</label>
+                    <div class="mt-1">
+                        <textarea id="Address" name="Address"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('Address') border-red-500 @enderror">{{ old('Address') }}</textarea>
+                        @error('Address')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
                 <!-- Champ Email -->
                 <div class="mb-6">
                     <label for="Email" class="block text-sm font-medium text-gray-700">Adresse email</label>

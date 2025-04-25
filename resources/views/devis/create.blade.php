@@ -57,7 +57,7 @@
 <!-- TVA -->
 <div class="form-group">
     <label for="TVA">TVA (%) :</label>
-    <input type="number" step="0.01" name="TVA" id="TVA" class="form-control" value="20" required>
+    <input type="number" step="0.01" name="TVA" id="TVA" class="form-control" value="5" required>
 </div>
 
 <!-- Total TTC -->

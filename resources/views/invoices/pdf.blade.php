@@ -70,8 +70,8 @@
 
         <!-- Infos entreprise -->
         <div class="company-info">
-            <strong>Nom de l’entreprise</strong><br>
-            Rue de l’Entreprise, 1000 Tunis<br>
+            <strong>Nom de l'entreprise</strong><br>
+            Rue de l'Entreprise, 1000 Tunis<br>
             Email : contact@entreprise.tn — Tel : +216 20 000 000<br>
             Matricule Fiscal : 1234567/A/M/000
         </div>
@@ -87,7 +87,7 @@
             <h2>Informations de la facture</h2>
             <table>
                 <tr><th>Montant TTC</th><td>{{ number_format($invoice->Amount, 2, ',', ' ') }} €</td></tr>
-                <tr><th>Date d’échéance</th><td>{{ \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') }}</td></tr>
+                <tr><th>Date d'échéance</th><td>{{ \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') }}</td></tr>
                 <tr><th>Statut</th><td>{{ $invoice->Status }}</td></tr>
             </table>
         </div>
@@ -102,9 +102,11 @@
         <div class="section">
             <h2>Client</h2>
             <table>
-                <tr><th>Nom</th><td>{{ $invoice->client->Username }}</td></tr>
+                <tr><th>Nom d'utilisateur</th><td>{{ $invoice->client->Username }}</td></tr>
+                <tr><th>Prénom</th><td>{{ $invoice->client->FirstName }}</td></tr>
+                <tr><th>Nom</th><td>{{ $invoice->client->LastName }}</td></tr>
                 <tr><th>Email</th><td>{{ $invoice->client->Email }}</td></tr>
-                <tr><th>Téléphone</th><td>{{ $invoice->client->Phone }}</td></tr>
+                <tr><th>Téléphone</th><td>{{ $invoice->client->PhoneNumber }}</td></tr>
                 <tr><th>Adresse</th><td>{{ $invoice->client->Address }}</td></tr>
             </table>
         </div>
@@ -167,7 +169,7 @@
             <th>Par PayPal</th>
             <td>
                 Adresse PayPal : paiement@entreprise.tn<br>
-                (Merci d’indiquer le numéro de la facture dans la note du paiement.)
+                (Merci d'indiquer le numéro de la facture dans la note du paiement.)
             </td>
         </tr>
     </table>
@@ -176,7 +178,7 @@
 
         <!-- Footer -->
         <div class="invoice-footer">
-            &copy; {{ date('Y') }} Nom de l’entreprise — www.entreprise.tn
+            &copy; {{ date('Y') }} Nom de l'entreprise — www.entreprise.tn
         </div>
     </div>
 </body>

@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('Username', 50)->unique();
             $table->string('Email', 100)->unique();
             $table->string('PasswordHash');
+            $table->string('FirstName', 50);
+            $table->string('LastName', 50);
+            $table->string('PhoneNumber', 20)->nullable();
+            $table->text('Address')->nullable();
             $table->enum('Role', ['Developer', 'Client', 'Admin'])->default('Client');
             $table->string('ProfilePicture', 500)->nullable();
             $table->text('Bio')->nullable();
