@@ -28,15 +28,8 @@ class DevisController extends Controller
     public function create()
     {
         // Récupérer l'utilisateur connecté
-        $user = auth()->user();
-    
-        // Récupérer les projets avec :
-        // - ApprovalStatus = "Approved" (acceptés par l'admin)
-        // - Status = "Pending" (statut en attente)
-        // - ClientID = ID de l'utilisateur connecté (projets appartenant à l'utilisateur)
-        $projects = Project::where('ApprovalStatus', 'Approved')
+            $projects = Project::where('ApprovalStatus', 'Approved')
             ->where('Status', 'Pending')
-            ->where('ClientID', $user->UserID)
             ->get();
     
         // Générer une référence unique

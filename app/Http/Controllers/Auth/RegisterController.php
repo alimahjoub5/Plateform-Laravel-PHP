@@ -21,6 +21,10 @@ class RegisterController extends Controller
             'Username' => 'required|string|max:50|unique:users',
             'Email' => 'required|string|email|max:100|unique:users',
             'PasswordHash' => 'required|string|min:8|confirmed',
+            'FirstName' => 'required|string|max:50',
+            'LastName' => 'required|string|max:50',
+            'PhoneNumber' => 'nullable|string|max:20',
+            'Address' => 'nullable|string',
             'ProfilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
             'Bio' => 'nullable|string',
             'Language' => 'nullable|in:English,Spanish,French,German',
@@ -31,6 +35,10 @@ class RegisterController extends Controller
             'Username' => $request->Username,
             'Email' => $request->Email,
             'PasswordHash' => Hash::make($request->PasswordHash),
+            'FirstName' => $request->FirstName,
+            'LastName' => $request->LastName,
+            'PhoneNumber' => $request->PhoneNumber,
+            'Address' => $request->Address,
             'Role' => 'Client', // Rôle par défaut
             'ProfilePicture' => $request->hasFile('ProfilePicture') ? $request->file('ProfilePicture')->store('users', 'public') : null,
             'Bio' => $request->Bio,

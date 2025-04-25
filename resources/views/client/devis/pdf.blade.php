@@ -124,9 +124,11 @@
         <!-- Informations du Client -->
         <div class="section">
             <h2>Informations du Client</h2>
-            <p><strong>Nom :</strong> {{ $devis->client->Username ?? 'Non spécifié' }}</p>
+            <p><strong>Nom d'utilisateur :</strong> {{ $devis->client->Username ?? 'Non spécifié' }}</p>
+            <p><strong>Prénom :</strong> {{ $devis->client->FirstName ?? 'Non spécifié' }}</p>
+            <p><strong>Nom :</strong> {{ $devis->client->LastName ?? 'Non spécifié' }}</p>
             <p><strong>Email :</strong> {{ $devis->client->Email ?? 'Non spécifié' }}</p>
-            <p><strong>Téléphone :</strong> {{ $devis->client->Phone ?? 'Non spécifié' }}</p>
+            <p><strong>Téléphone :</strong> {{ $devis->client->PhoneNumber ?? 'Non spécifié' }}</p>
             <p><strong>Adresse :</strong> {{ $devis->client->Address ?? 'Non spécifié' }}</p>
         </div>
 

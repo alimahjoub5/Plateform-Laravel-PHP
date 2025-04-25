@@ -55,7 +55,7 @@ Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
 
 // Autres pages publiques
-Route::get('/home')->name('home');
+Route::get('/home', [DashboardController::class, 'index'])->name('home');
 Route::get('/temoignages', [TestimonialController::class, 'index'])->name('testimonials');
 Route::get('/portPub', [PortfolioController::class, 'affiche'])->name('portfolios.public');
 Route::get('/tags', [PortfolioController::class, 'getTags'])->name('tags.autocomplete');

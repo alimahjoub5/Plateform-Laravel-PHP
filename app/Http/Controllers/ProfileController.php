@@ -37,6 +37,10 @@ class ProfileController extends Controller
         $request->validate([
             'Username' => 'required|string|max:50|unique:users,Username,' . $user->UserID . ',UserID',
             'Email' => 'required|string|email|max:100|unique:users,Email,' . $user->UserID . ',UserID',
+            'FirstName' => 'required|string|max:50',
+            'LastName' => 'required|string|max:50',
+            'PhoneNumber' => 'nullable|string|max:20',
+            'Address' => 'nullable|string',
             'ProfilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
             'Bio' => 'nullable|string',
             'Language' => 'required|in:English,Spanish,French,German',
@@ -45,6 +49,10 @@ class ProfileController extends Controller
         // Mettre à jour les informations de l'utilisateur
         $user->Username = $request->Username;
         $user->Email = $request->Email;
+        $user->FirstName = $request->FirstName;
+        $user->LastName = $request->LastName;
+        $user->PhoneNumber = $request->PhoneNumber;
+        $user->Address = $request->Address;
         $user->Bio = $request->Bio;
         $user->Language = $request->Language;
 

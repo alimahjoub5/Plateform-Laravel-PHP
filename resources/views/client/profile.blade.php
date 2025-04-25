@@ -51,6 +51,49 @@
                     @enderror
                 </div>
 
+                <!-- Section Prénom -->
+                <div class="mb-6">
+                    <label for="FirstName" class="block text-sm font-medium text-gray-700">Prénom</label>
+                    <input type="text" name="FirstName" id="FirstName"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('FirstName') border-red-500 @enderror"
+                        value="{{ old('FirstName', $user->FirstName) }}" required>
+                    @error('FirstName')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Section Nom -->
+                <div class="mb-6">
+                    <label for="LastName" class="block text-sm font-medium text-gray-700">Nom</label>
+                    <input type="text" name="LastName" id="LastName"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('LastName') border-red-500 @enderror"
+                        value="{{ old('LastName', $user->LastName) }}" required>
+                    @error('LastName')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Section Téléphone -->
+                <div class="mb-6">
+                    <label for="PhoneNumber" class="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
+                    <input type="text" name="PhoneNumber" id="PhoneNumber"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('PhoneNumber') border-red-500 @enderror"
+                        value="{{ old('PhoneNumber', $user->PhoneNumber) }}">
+                    @error('PhoneNumber')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Section Adresse -->
+                <div class="mb-6">
+                    <label for="Address" class="block text-sm font-medium text-gray-700">Adresse</label>
+                    <textarea name="Address" id="Address" rows="3"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('Address') border-red-500 @enderror">{{ old('Address', $user->Address) }}</textarea>
+                    @error('Address')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Section Email -->
                 <div class="mb-6">
                     <label for="Email" class="block text-sm font-medium text-gray-700">Adresse email</label>
