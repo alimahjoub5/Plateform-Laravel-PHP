@@ -89,35 +89,37 @@
                 </div>
             </div>
 
-            <!-- Signature -->
-            <div class="signature">
-                <h2>Signature</h2>
-                @if ($devis->Statut == 'En attente')
-                    <!-- Pad de signature et boutons d'action -->
-                    <div id="signature-pad" class="border p-3 bg-light mb-3">
-                        <canvas id="signature-canvas" style="width: 100%; height: 200px; border: 1px solid #000;"></canvas>
-                        <button id="clear-signature" class="btn btn-secondary mt-2">Effacer</button>
+                       <!-- Signature -->
+                       <div class="signature">
+                        <h2>Signature</h2>
+                        @if ($devis->Statut == 'Accepté')
+                            <!-- Afficher la signature si le devis est déjà accepté -->
+                            <p>Signature du client :</p>
+                            <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
+                            <p>Date : {{ $devis->updated_at }}</p> <!-- Afficher la date actuelle -->
+                        @elseif ($devis->Statut == 'En attente')
+                            <!-- Pad de signature et boutons d'action -->
+                            <div id="signature-pad" class="border p-3 bg-light mb-3">
+                                <canvas id="signature-canvas" style="width: 100%; height: 200px; border: 1px solid #000;"></canvas>
+                                <button id="clear-signature" class="btn btn-secondary mt-2">Effacer</button>
+                            </div>
+                            <form action="{{ route('client.devis.action', $devis->DevisID) }}" method="POST" id="devis-action-form">
+                                @csrf
+                                <input type="hidden" name="signature" id="signature-input">
+                                
+                                <!-- Boutons d'action -->
+                                <button type="submit" name="action" value="accept" class="btn btn-success">
+                                    <i class="fas fa-check"></i> Accepter le devis
+                                </button>
+                                <button type="submit" name="action" value="reject" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Refuser le devis
+                                </button>
+                            </form>
+                        @else
+                            <p>Devis refusé.</p>
+                        @endif
                     </div>
-                    <form action="{{ route('client.devis.action', $devis->DevisID) }}" method="POST" id="devis-action-form">
-                        @csrf
-                        <input type="hidden" name="signature" id="signature-input">
-                        
-                        <!-- Boutons d'action -->
-                        <button type="submit" name="action" value="accept" class="btn btn-success">
-                            <i class="fas fa-check"></i> Accepter le devis
-                        </button>
-                        <button type="submit" name="action" value="reject" class="btn btn-danger">
-                            <i class="fas fa-times"></i> Refuser le devis
-                        </button>
-                    </form>
-                @elseif ($devis->Statut == 'Accepté')
-                    <!-- Afficher la signature si le devis est accepté -->
-                    <p>Signature du client :</p>
-                    <img src="data:image/png;base64,{{ $devis->signature }}" alt="Signature du client" style="max-width: 15%; height: auto; border: 0px solid #000;">
-                    <p>Date : {{ $devis->updated_at->format('d/m/Y H:i') }}</p>
-                @else
-                    <p>Devis refusé.</p>
-                @endif
+                </div>
             </div>
         </div>
         

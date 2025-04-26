@@ -28,18 +28,8 @@
             <small id="projectHelp" class="form-text text-muted">Sélectionnez un projet pour lequel créer un devis.</small>
         </div>
 
-        <!-- Sélection du Client -->
-        <div class="form-group">
-            <label for="ClientID">Client :</label>
-            <select name="ClientID" id="ClientID" class="form-control" required>
-                @foreach ($clients as $client)
-                <option value="{{ $client->UserID }}">
-                    {{ $client->Username }} ({{ $client->Email }})
-                </option>
-                @endforeach
-            </select>
-            <small id="clientHelp" class="form-text text-muted">Sélectionnez le client pour ce devis.</small>
-        </div>
+        <!-- Champ caché pour le ClientID (automatiquement rempli par l'utilisateur connecté) -->
+        <input type="hidden" name="ClientID" value="{{ auth()->user()->UserID }}">
 
         <!-- Référence du Devis -->
         <div class="form-group">

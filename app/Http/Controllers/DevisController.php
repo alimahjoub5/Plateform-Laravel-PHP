@@ -31,15 +31,12 @@ class DevisController extends Controller
             $projects = Project::where('ApprovalStatus', 'Approved')
             ->where('Status', 'Pending')
             ->get();
-
-        // Récupérer uniquement les utilisateurs avec le rôle Client
-        $clients = User::where('Role', 'Client')->get();
     
         // Générer une référence unique
         $reference = 'DEV-' . strtoupper(uniqid());
     
-        // Passer les projets, les clients et la référence à la vue
-        return view('devis.create', compact('projects', 'clients', 'reference'));
+        // Passer les projets et la référence à la vue
+        return view('devis.create', compact('projects', 'reference'));
     }
 
     /**
@@ -47,17 +44,6 @@ class DevisController extends Controller
      */
     public function store(Request $request)
     {
-        // Vérifier si l'utilisateur est un administrateur
-        if (auth()->user()->Role !== 'Admin') {
-            abort(403, 'Seuls les administrateurs peuvent créer des devis.');
-        }
-
-        // Vérifier que le client sélectionné a bien le rôle Client
-        $client = User::findOrFail($request->ClientID);
-        if ($client->Role !== 'Client') {
-            return back()->with('error', 'Seuls les utilisateurs avec le rôle Client peuvent être sélectionnés comme clients.');
-        }
-
         // Validation des données du formulaire
         $request->validate([
             'ProjectID' => 'required|exists:projects,ProjectID',

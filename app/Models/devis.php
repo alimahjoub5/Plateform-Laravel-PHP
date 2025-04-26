@@ -25,42 +25,26 @@ class Devis extends Model
         'TotalHT',
         'TVA',
         'TotalTTC',
-        'ConditionsGenerales',
         'Statut',
-        'CreatedBy',
-        'signature'
+        'ConditionsGenerales',
+        'signature',
     ];
 
-    protected $casts = [
-        'DateEmission' => 'date',
-        'DateValidite' => 'date',
-        'TotalHT' => 'decimal:2',
-        'TVA' => 'decimal:2',
-        'TotalTTC' => 'decimal:2',
-    ];
+ // Relation avec l'utilisateur qui a créé le devis
+ public function createdBy()
+ {
+     return $this->belongsTo(User::class, 'CreatedBy', 'UserID');
+ }
 
-    // Relation avec le projet
-    public function project()
-    {
-        return $this->belongsTo(Project::class, 'ProjectID', 'ProjectID');
-    }
+ // Relations existantes
+ public function client()
+ {
+     return $this->belongsTo(User::class, 'ClientID', 'UserID');
+ }
 
-    // Relation avec le client
-    public function client()
-    {
-        return $this->belongsTo(User::class, 'ClientID', 'UserID');
-    }
-
-    // Relation avec le créateur
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'CreatedBy', 'UserID');
-    }
-
-    // Relation avec les lignes du devis
-    public function lignes()
-    {
-        return $this->hasMany(DevisLigne::class, 'DevisID', 'DevisID');
-    }
+ public function project()
+ {
+     return $this->belongsTo(Project::class, 'ProjectID', 'ProjectID');
+ }
 }
 

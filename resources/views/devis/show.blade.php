@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p class="mb-2"><strong>Nom :</strong> {{ $devis->createdBy->FirstName." ".$devis->createdBy->LastName ?? 'Non spécifié' }}</p>
+                            <p class="mb-2"><strong>Nom :</strong> {{ $devis->createdBy->Username ?? 'Non spécifié' }}</p>
                             <p class="mb-2"><strong>Email :</strong> {{ $devis->createdBy->Email ?? 'Non spécifié' }}</p>
                             <p class="mb-0"><strong>Rôle :</strong> {{ $devis->createdBy->Role ?? 'Non spécifié' }}</p>
                         </div>
