@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('LastName', 50);
             $table->string('PhoneNumber', 20)->nullable();
             $table->text('Address')->nullable();
-            $table->enum('Role', ['Developer', 'Client', 'Admin'])->default('Client');
+            $table->enum('Role', ['freelancer', 'Client', 'Admin'])->default('Client');
             $table->string('ProfilePicture', 500)->nullable();
             $table->text('Bio')->nullable();
             $table->enum('Language', ['English', 'Spanish', 'French', 'German'])->nullable();

@@ -17,7 +17,10 @@
             <label for="ProjectID">Projet :</label>
             <select name="ProjectID" id="ProjectID" class="form-control" required>
                 @foreach ($projects as $project)
-                <option value="{{ $project->ProjectID }}" data-budget="{{ $project->Budget }}" data-deadline="{{ $project->Deadline }}">
+                <option value="{{ $project->ProjectID }}" 
+                        data-budget="{{ $project->Budget }}" 
+                        data-deadline="{{ $project->Deadline }}"
+                        data-client-id="{{ $project->ClientID }}">
                     {{ $project->Title }} (Budget : {{ $project->Budget }} €, Deadline : {{ $project->Deadline }})
                 </option>
                 @endforeach
@@ -59,60 +62,96 @@
         </div>
 
         <!-- Total HT -->
-<div class="form-group">
-    <label for="TotalHT">Total HT :</label>
-    <input type="number" step="0.01" name="TotalHT" id="TotalHT" class="form-control" required>
+        <div class="form-group">
+            <label for="TotalHT">Total HT :</label>
+            <input type="number" step="0.01" name="TotalHT" id="TotalHT" class="form-control" required>
+        </div>
+
+        <!-- TVA -->
+        <div class="form-group">
+            <label for="TVA">TVA (%) :</label>
+            <input type="number" step="0.01" name="TVA" id="TVA" class="form-control" value="5" required>
+        </div>
+
+        <!-- Total TTC -->
+        <div class="form-group">
+            <label for="TotalTTC">Total TTC :</label>
+            <input type="number" step="0.01" name="TotalTTC" id="TotalTTC" class="form-control" readonly>
+        </div>
+
+        <!-- Conditions générales -->
+        <div class="form-group">
+            <label for="ConditionsGenerales">Conditions générales :</label>
+            <textarea name="ConditionsGenerales" id="ConditionsGenerales" class="form-control">{{ $conditionsGenerales ?? '' }}</textarea>
+            <small id="conditionsHelp" class="form-text text-muted">
+                Exemples de clauses :<br>
+                - Paiement : 50% à la commande, 50% à la livraison.<br>
+                - Délai de livraison : 30 jours à partir de la date de commande.<br>
+                - Garantie : 12 mois à partir de la date de livraison.<br>
+                - Résiliation : Tout retard de paiement entraîne des pénalités de 1,5% par mois.
+            </small>
+            <div id="suggestions" class="mt-2"></div>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+    @endif
 </div>
 
-<!-- TVA -->
-<div class="form-group">
-    <label for="TVA">TVA (%) :</label>
-    <input type="number" step="0.01" name="TVA" id="TVA" class="form-control" value="5" required>
-</div>
-
-<!-- Total TTC -->
-<div class="form-group">
-    <label for="TotalTTC">Total TTC :</label>
-    <input type="number" step="0.01" name="TotalTTC" id="TotalTTC" class="form-control" readonly>
-</div>
-
-<!-- Script pour le calcul automatique -->
+<!-- Script pour améliorer l'intelligence du formulaire -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('devisForm');
         const totalHT = document.getElementById('TotalHT');
         const tva = document.getElementById('TVA');
         const totalTTC = document.getElementById('TotalTTC');
+        const dateEmission = document.getElementById('DateEmission');
+        const dateValidite = document.getElementById('DateValidite');
+        const projectSelect = document.getElementById('ProjectID');
+        const clientIdInput = document.getElementById('ClientID');
 
-        // Fonction pour calculer le Total TTC
-        function calculateTTC() {
-            const ht = parseFloat(totalHT.value) || 0; // Récupère le Total HT (ou 0 si vide)
-            const tvaRate = parseFloat(tva.value) || 0; // Récupère le taux de TVA (ou 0 si vide)
-            const ttc = ht * (1 + tvaRate / 100); // Calcule le Total TTC
-            totalTTC.value = ttc.toFixed(2); // Affiche le Total TTC avec 2 décimales
+        // Mettre à jour le ClientID lors de la sélection d'un projet
+        projectSelect.addEventListener('change', function() {
+            const selectedOption = projectSelect.options[projectSelect.selectedIndex];
+            const clientId = selectedOption.getAttribute('data-client-id');
+            clientIdInput.value = clientId;
+        });
+
+        // Initialiser le ClientID avec la première option
+        if (projectSelect.options.length > 0) {
+            const firstOption = projectSelect.options[0];
+            clientIdInput.value = firstOption.getAttribute('data-client-id');
         }
 
-        // Écouteurs d'événements pour recalculer le Total TTC
+        // Calcul automatique du Total TTC
+        function calculateTTC() {
+            const ht = parseFloat(totalHT.value) || 0;
+            const tvaRate = parseFloat(tva.value) || 0;
+            const ttc = ht * (1 + tvaRate / 100);
+            totalTTC.value = ttc.toFixed(2);
+        }
+
         totalHT.addEventListener('input', calculateTTC);
         tva.addEventListener('input', calculateTTC);
 
-        // Calcul initial au chargement de la page
-        calculateTTC();
+        // Validation de la date de validité
+        dateValidite.addEventListener('change', function () {
+            if (new Date(dateValidite.value) <= new Date(dateEmission.value)) {
+                alert('La date de validité doit être postérieure à la date d\'émission.');
+                dateValidite.value = '';
+            }
+        });
+
+        // Affichage des détails du projet sélectionné
+        projectSelect.addEventListener('change', function () {
+            const selectedOption = projectSelect.options[projectSelect.selectedIndex];
+            const budget = selectedOption.getAttribute('data-budget');
+            const deadline = selectedOption.getAttribute('data-deadline');
+            console.log(`Projet sélectionné : Budget = ${budget} €, Deadline = ${deadline}`);
+        });
     });
 </script>
-
-<!-- Conditions générales -->
-<div class="form-group">
-    <label for="ConditionsGenerales">Conditions générales :</label>
-    <textarea name="ConditionsGenerales" id="ConditionsGenerales" class="form-control">{{ $conditionsGenerales ?? '' }}</textarea>
-    <small id="conditionsHelp" class="form-text text-muted">
-        Exemples de clauses :<br>
-        - Paiement : 50% à la commande, 50% à la livraison.<br>
-        - Délai de livraison : 30 jours à partir de la date de commande.<br>
-        - Garantie : 12 mois à partir de la date de livraison.<br>
-        - Résiliation : Tout retard de paiement entraîne des pénalités de 1,5% par mois.
-    </small>
-    <div id="suggestions" class="mt-2"></div>
-</div>
 
 <!-- CKEditor -->
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
@@ -120,7 +159,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Initialiser CKEditor sur le textarea avec l'id "ConditionsGenerales"
         CKEDITOR.replace('ConditionsGenerales', {
-            height: 300, // Hauteur de l'éditeur
+            height: 300,
             toolbar: [
                 { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat'] },
                 { name: 'paragraph', items: ['NumberedList', 'BulletedList', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
@@ -128,10 +167,10 @@
                 { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
                 { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
                 { name: 'colors', items: ['TextColor', 'BGColor'] },
-                { name: 'tools', items: ['Maximize', 'Source'] } // Option pour voir le code source
+                { name: 'tools', items: ['Maximize', 'Source'] }
             ],
-            removeButtons: 'Subscript,Superscript', // Boutons à désactiver
-            language: 'fr', // Langue française
+            removeButtons: 'Subscript,Superscript',
+            language: 'fr',
         });
 
         // Sauvegarde automatique
@@ -175,52 +214,6 @@
                     suggestionsDiv.appendChild(suggestion);
                 }
             });
-        });
-    });
-</script>
-
-        <!-- Bouton de soumission -->
-        <button type="submit" class="btn btn-primary">Créer</button>
-    </form>
-    @endif
-</div>
-
-<!-- Script pour améliorer l'intelligence du formulaire -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('devisForm');
-        const totalHT = document.getElementById('TotalHT');
-        const tva = document.getElementById('TVA');
-        const totalTTC = document.getElementById('TotalTTC');
-        const dateEmission = document.getElementById('DateEmission');
-        const dateValidite = document.getElementById('DateValidite');
-
-        // Calcul automatique du Total TTC
-        function calculateTTC() {
-            const ht = parseFloat(totalHT.value) || 0;
-            const tvaRate = parseFloat(tva.value) || 0;
-            const ttc = ht * (1 + tvaRate / 100);
-            totalTTC.value = ttc.toFixed(2);
-        }
-
-        totalHT.addEventListener('input', calculateTTC);
-        tva.addEventListener('input', calculateTTC);
-
-        // Validation de la date de validité
-        dateValidite.addEventListener('change', function () {
-            if (new Date(dateValidite.value) <= new Date(dateEmission.value)) {
-                alert('La date de validité doit être postérieure à la date d\'émission.');
-                dateValidite.value = '';
-            }
-        });
-
-        // Affichage des détails du projet sélectionné
-        const projectSelect = document.getElementById('ProjectID');
-        projectSelect.addEventListener('change', function () {
-            const selectedOption = projectSelect.options[projectSelect.selectedIndex];
-            const budget = selectedOption.getAttribute('data-budget');
-            const deadline = selectedOption.getAttribute('data-deadline');
-            console.log(`Projet sélectionné : Budget = ${budget} €, Deadline = ${deadline}`);
         });
     });
 </script>
