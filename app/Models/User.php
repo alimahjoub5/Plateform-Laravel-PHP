@@ -65,18 +65,21 @@ class User extends Authenticatable
     }
 
     // Dans le modèle User
-public function isAdmin() {
-    return $this->role === 'admin';
-}
+    public function isAdmin() {
+        return strtolower($this->Role) === 'admin';
+    }
 
-public function isClient() {
-    return $this->role === 'client';
-}
+    public function isClient() {
+        return strtolower($this->Role) === 'client';
+    }
 
+    public function isEmployee()
+    {
+        return in_array(strtolower($this->Role), ['developer', 'designer', 'chef_projet']);
+    }
 
-public function isEmployee()
-{
-    return in_array($this->Role, ['developer', 'designer', 'chef_projet']);
-}
-
+    public function messages()
+    {
+        return $this->hasMany(ChatMessage::class, 'SenderID', 'UserID');
+    }
 }

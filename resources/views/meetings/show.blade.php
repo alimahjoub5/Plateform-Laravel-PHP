@@ -21,6 +21,19 @@
             </div>
         </div>
 
+        <!-- Actions contextuelles -->
+        <div class="flex flex-wrap gap-2 mb-4">
+            <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                <i class="fas fa-video mr-2"></i> Rejoindre la réunion
+            </a>
+            <a href="#" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+                <i class="fas fa-calendar-plus mr-2"></i> Ajouter à l'agenda
+            </a>
+            <a href="#" class="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600">
+                <i class="fas fa-share-alt mr-2"></i> Partager
+            </a>
+        </div>
+
         <!-- Liste des participants -->
         <h3 class="text-lg font-bold mb-2">Participants</h3>
         <ul class="list-disc list-inside">
@@ -28,6 +41,12 @@
                 <li class="text-sm text-gray-700">{{ $attendee->Username }}</li>
             @endforeach
         </ul>
+
+        <!-- Pièces jointes -->
+        <h3 class="text-lg font-bold mt-4 mb-2">Pièces jointes</h3>
+        <div class="border rounded-md p-4">
+            <p class="text-gray-500">Aucune pièce jointe pour le moment.</p>
+        </div>
     </div>
 </div>
 @endsection

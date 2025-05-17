@@ -10,7 +10,6 @@ use App\Http\Controllers\{
     NotificationController,
     PortfolioController,
     BlogController,
-    TestimonialController,
     ServiceController,
     AnalyticsController,
     Auth\LoginController,
@@ -25,8 +24,12 @@ use App\Http\Controllers\{
     PaymentController,
     PayPalController,
     MeetingController,
-    ChatController
+    ChatController,
+    TestimonialController,
+    ProjectTimelineController
 };
+use App\Http\Controllers\Admin\AdminTestimonialController;
+use App\Http\Controllers\Client\ClientTestimonialController;
 use App\Models\User;
 use App\Models\Service;
 
@@ -170,4 +173,35 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/meetings', [MeetingController::class, 'destroy'])->name('meetings.destroy');
     Route::get('/meetings/calendar', [MeetingController::class, 'calendar'])->name('meetings.calendar');
     Route::get('/meetings/calendar-data', [MeetingController::class, 'calendarData']);
+
+    // Routes pour le chat
+    Route::get('/projects/{projectId}/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/projects/{projectId}/chat', [ChatController::class, 'store'])->name('chat.store');
+    Route::post('/chat/messages/{messageId}/read', [ChatController::class, 'markAsRead'])->name('chat.markAsRead');
+
+    // Timeline du projet
+    Route::get('/projects/{projectId}/timeline', [ProjectTimelineController::class, 'show'])->name('projects.timeline');
 });
+
+
+// Routes pour les témoignages clients
+Route::middleware(['auth', \App\Http\Middleware\ClientAccessMiddleware::class])->prefix('client')->name('client.')->group(function () {
+    Route::get('/testimonials', [ClientTestimonialController::class, 'index'])->name('testimonials.index');
+    Route::post('/testimonials', [ClientTestimonialController::class, 'store'])->name('testimonials.store');
+    Route::get('/testimonials/create', [ClientTestimonialController::class, 'create'])->name('testimonials.create');
+    Route::get('/testimonials/{testimonial}', [ClientTestimonialController::class, 'show'])->name('testimonials.show');
+    Route::get('/testimonials/{testimonial}/edit', [ClientTestimonialController::class, 'edit'])->name('testimonials.edit');
+    Route::put('/testimonials/{testimonial}', [ClientTestimonialController::class, 'update'])->name('testimonials.update');
+    Route::delete('/testimonials/{testimonial}', [ClientTestimonialController::class, 'destroy'])->name('testimonials.destroy');
+});
+
+// Routes pour la gestion des témoignages (admin)
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/testimonials', [AdminTestimonialController::class, 'index'])->name('testimonials.index');
+    Route::get('/testimonials/pending', [AdminTestimonialController::class, 'pending'])->name('testimonials.pending');
+    Route::post('/testimonials/{testimonial}/approve', [AdminTestimonialController::class, 'approve'])->name('testimonials.approve');
+    Route::post('/testimonials/{testimonial}/reject', [AdminTestimonialController::class, 'reject'])->name('testimonials.reject');
+    Route::delete('/testimonials/{testimonial}', [AdminTestimonialController::class, 'destroy'])->name('testimonials.destroy');
+});
+
+

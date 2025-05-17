@@ -6,24 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatMessage extends Model
 {
+    protected $primaryKey = 'MessageID';
+
     protected $fillable = [
-        'project_id',
-        'sender_id',
-        'receiver_id',
-        'message',
-        'is_read',
+        'ProjectID',
+        'SenderID',
+        'Message',
+        'IsRead',
+        'AttachmentURL'
     ];
 
-    // Relationship to the project
+    protected $casts = [
+        'IsRead' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
+    // Relation avec le projet
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'ProjectID', 'ProjectID');
     }
 
-    // Relationship to the sender
+    // Relation avec l'expéditeur
     public function sender()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class, 'SenderID', 'UserID');
     }
 
     // Relationship to the receiver

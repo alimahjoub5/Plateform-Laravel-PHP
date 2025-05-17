@@ -34,6 +34,10 @@
                     @auth
                         <!-- Lien "Application" pour les utilisateurs authentifiés -->
                         <a href="{{ route('users.index') }}" class="bg-white text-blue-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Application</a>
+                        <!-- Lien "Mes Témoignages" pour les utilisateurs authentifiés -->
+                        <a href="{{ route('client.testimonials.index') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-star mr-1"></i>Mes Témoignages
+                        </a>
                     @else
                         <!-- Liens pour les utilisateurs non authentifiés -->
                         <a href="{{ route('login') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Connexion</a>

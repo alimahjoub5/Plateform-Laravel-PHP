@@ -28,7 +28,7 @@
             <small id="projectHelp" class="form-text text-muted">Sélectionnez un projet pour lequel créer un devis.</small>
         </div>
 
-        <!-- Champ caché pour le ClientID (automatiquement rempli par l'utilisateur connecté) -->
+        <!-- Champ caché pour le ClientID -->
         <input type="hidden" name="ClientID" value="{{ auth()->user()->UserID }}">
 
         <!-- Référence du Devis -->
@@ -54,19 +54,29 @@
         <!-- Total HT -->
         <div class="form-group">
             <label for="TotalHT">Total HT :</label>
-            <input type="number" step="0.01" name="TotalHT" id="TotalHT" class="form-control" required>
+            <input type="number" step="0.01" min="0" name="TotalHT" id="TotalHT" class="form-control" required>
+            <small class="text-muted">Montant hors taxes en euros (€)</small>
         </div>
 
         <!-- TVA -->
         <div class="form-group">
             <label for="TVA">TVA (%) :</label>
-            <input type="number" step="0.01" name="TVA" id="TVA" class="form-control" value="5" required>
+            <input type="number" step="0.01" min="0" max="100" name="TVA" id="TVA" class="form-control" value="19" required>
+            <small class="text-muted">Taux de TVA en pourcentage (%)</small>
+        </div>
+
+        <!-- Montant TVA -->
+        <div class="form-group">
+            <label for="MontantTVA">Montant TVA :</label>
+            <input type="number" step="0.01" name="MontantTVA" id="MontantTVA" class="form-control" readonly>
+            <small class="text-muted">Montant de la TVA en euros (€)</small>
         </div>
 
         <!-- Total TTC -->
         <div class="form-group">
             <label for="TotalTTC">Total TTC :</label>
             <input type="number" step="0.01" name="TotalTTC" id="TotalTTC" class="form-control" readonly>
+            <small class="text-muted">Montant toutes taxes comprises en euros (€)</small>
         </div>
 
         <!-- Conditions générales -->
@@ -95,35 +105,33 @@
         const form = document.getElementById('devisForm');
         const totalHT = document.getElementById('TotalHT');
         const tva = document.getElementById('TVA');
+        const montantTVA = document.getElementById('MontantTVA');
         const totalTTC = document.getElementById('TotalTTC');
         const dateEmission = document.getElementById('DateEmission');
         const dateValidite = document.getElementById('DateValidite');
         const projectSelect = document.getElementById('ProjectID');
-        const clientIdInput = document.getElementById('ClientID');
 
-        // Mettre à jour le ClientID lors de la sélection d'un projet
-        projectSelect.addEventListener('change', function() {
-            const selectedOption = projectSelect.options[projectSelect.selectedIndex];
-            const clientId = selectedOption.getAttribute('data-client-id');
-            clientIdInput.value = clientId;
-        });
+        // Initialiser la date d'émission à aujourd'hui
+        const today = new Date().toISOString().split('T')[0];
+        dateEmission.value = today;
 
-        // Initialiser le ClientID avec la première option
-        if (projectSelect.options.length > 0) {
-            const firstOption = projectSelect.options[0];
-            clientIdInput.value = firstOption.getAttribute('data-client-id');
-        }
-
-        // Calcul automatique du Total TTC
-        function calculateTTC() {
+        // Calcul automatique des totaux
+        function calculateTotals() {
             const ht = parseFloat(totalHT.value) || 0;
             const tvaRate = parseFloat(tva.value) || 0;
-            const ttc = ht * (1 + tvaRate / 100);
+            
+            // Calcul du montant de la TVA
+            const tvaAmount = (ht * tvaRate) / 100;
+            montantTVA.value = tvaAmount.toFixed(2);
+            
+            // Calcul du total TTC
+            const ttc = ht + tvaAmount;
             totalTTC.value = ttc.toFixed(2);
         }
 
-        totalHT.addEventListener('input', calculateTTC);
-        tva.addEventListener('input', calculateTTC);
+        // Écouter les changements dans les champs de calcul
+        totalHT.addEventListener('input', calculateTotals);
+        tva.addEventListener('input', calculateTotals);
 
         // Validation de la date de validité
         dateValidite.addEventListener('change', function () {
@@ -133,12 +141,39 @@
             }
         });
 
-        // Affichage des détails du projet sélectionné
+        // Suggestion du budget du projet
         projectSelect.addEventListener('change', function () {
             const selectedOption = projectSelect.options[projectSelect.selectedIndex];
-            const budget = selectedOption.getAttribute('data-budget');
-            const deadline = selectedOption.getAttribute('data-deadline');
-            console.log(`Projet sélectionné : Budget = ${budget} €, Deadline = ${deadline}`);
+            const budget = parseFloat(selectedOption.getAttribute('data-budget')) || 0;
+            totalHT.value = budget.toFixed(2);
+            calculateTotals();
+        });
+
+        // Validation du formulaire avant soumission
+        form.addEventListener('submit', function(e) {
+            const ht = parseFloat(totalHT.value) || 0;
+            const tvaRate = parseFloat(tva.value) || 0;
+            const ttc = parseFloat(totalTTC.value) || 0;
+
+            if (ht <= 0) {
+                e.preventDefault();
+                alert('Le montant HT doit être supérieur à 0');
+                return;
+            }
+
+            if (tvaRate < 0 || tvaRate > 100) {
+                e.preventDefault();
+                alert('Le taux de TVA doit être compris entre 0 et 100');
+                return;
+            }
+
+            // Vérifier que le TTC est correct
+            const expectedTTC = ht * (1 + tvaRate / 100);
+            if (Math.abs(ttc - expectedTTC) > 0.01) {
+                e.preventDefault();
+                alert('Erreur dans le calcul du total TTC');
+                return;
+            }
         });
     });
 </script>
@@ -147,7 +182,7 @@
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialiser CKEditor sur le textarea avec l'id "ConditionsGenerales"
+        // Initialiser CKEditor
         CKEDITOR.replace('ConditionsGenerales', {
             height: 300,
             toolbar: [
@@ -170,40 +205,9 @@
             textarea.value = savedText;
         }
 
-        // Écouter les changements dans CKEditor et sauvegarder dans localStorage
         CKEDITOR.instances.ConditionsGenerales.on('change', function () {
             const content = CKEDITOR.instances.ConditionsGenerales.getData();
             localStorage.setItem('conditionsGenerales', content);
-        });
-
-        // Suggestions automatiques
-        const suggestionsDiv = document.getElementById('suggestions');
-        const commonClauses = [
-            "Paiement : 50% à la commande, 50% à la livraison.",
-            "Délai de livraison : 30 jours à partir de la date de commande.",
-            "Garantie : 12 mois à partir de la date de livraison.",
-            "Résiliation : Tout retard de paiement entraîne des pénalités de 1,5% par mois."
-        ];
-
-        // Écouter les changements dans le textarea (avant l'initialisation de CKEditor)
-        textarea.addEventListener('input', function () {
-            const input = textarea.value.toLowerCase();
-            suggestionsDiv.innerHTML = '';
-
-            commonClauses.forEach(clause => {
-                if (clause.toLowerCase().includes(input)) {
-                    const suggestion = document.createElement('div');
-                    suggestion.textContent = clause;
-                    suggestion.classList.add('suggestion', 'p-2', 'mb-1', 'bg-light', 'cursor-pointer');
-                    suggestion.addEventListener('click', function () {
-                        const editor = CKEDITOR.instances.ConditionsGenerales;
-                        const currentContent = editor.getData();
-                        editor.setData(currentContent + '\n' + clause);
-                        suggestionsDiv.innerHTML = '';
-                    });
-                    suggestionsDiv.appendChild(suggestion);
-                }
-            });
         });
     });
 </script>

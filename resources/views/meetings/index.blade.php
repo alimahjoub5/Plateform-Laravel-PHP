@@ -11,6 +11,16 @@
         <i class="fas fa-plus mr-2"></i> Créer une Réunion
     </a>
 
+    <!-- Filtres et recherche -->
+    <div class="mb-4 flex flex-wrap gap-4">
+        <input type="text" id="search" placeholder="Rechercher par titre, projet ou organisateur..." class="px-4 py-2 border rounded-md">
+        <select id="dateFilter" class="px-4 py-2 border rounded-md">
+            <option value="all">Toutes les réunions</option>
+            <option value="upcoming">À venir</option>
+            <option value="past">Passées</option>
+        </select>
+    </div>
+
     <!-- Tableau des réunions -->
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <table class="min-w-full">
@@ -53,4 +63,14 @@
         </table>
     </div>
 </div>
+
+<script>
+    document.getElementById('search').addEventListener('input', function() {
+        // Logique de recherche à implémenter
+    });
+
+    document.getElementById('dateFilter').addEventListener('change', function() {
+        // Logique de filtrage par date à implémenter
+    });
+</script>
 @endsection

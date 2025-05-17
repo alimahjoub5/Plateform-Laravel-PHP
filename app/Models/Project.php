@@ -97,4 +97,14 @@ public function client()
     {
         return $this->hasMany(Invoice::class, 'ProjectID', 'ProjectID');
     }
+
+    public function testimonial()
+    {
+        return $this->hasOne(Testimonial::class, 'ProjectID', 'ProjectID');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(ChatMessage::class, 'ProjectID', 'ProjectID');
+    }
 }
