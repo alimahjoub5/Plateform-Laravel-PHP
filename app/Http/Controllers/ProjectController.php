@@ -54,7 +54,7 @@ class ProjectController extends Controller
     // Afficher les détails d'un projet
     public function show($id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with(['client', 'devis'])->findOrFail($id);
         return view('projects.show', compact('project'));
     }
 

@@ -41,12 +41,23 @@
 
                     <!-- Devis -->
                     <div class="flex flex-col items-center">
-                        <div class="w-8 h-8 rounded-full {{ isset($project->quotes) && $project->quotes->count() > 0 ? 'bg-green-500' : 'bg-gray-300' }} flex items-center justify-center text-white mb-2">
+                        <div class="w-8 h-8 rounded-full {{ $project->devis->count() > 0 ? 'bg-green-500' : 'bg-gray-300' }} flex items-center justify-center text-white mb-2">
                             <i class="fas fa-file-invoice"></i>
                         </div>
                         <span class="text-sm font-medium">Devis</span>
                         <span class="text-xs text-gray-500">
-                            {{ isset($project->quotes) && $project->quotes->count() > 0 ? $project->quotes->count() . ' devis' : 'En attente' }}
+                            @if($project->devis->count() > 0)
+                                {{ $project->devis->count() }} devis
+                                @if($project->devis->where('Statut', 'Accepté')->count() > 0)
+                                    (Accepté)
+                                @elseif($project->devis->where('Statut', 'Refusé')->count() > 0)
+                                    (Refusé)
+                                @else
+                                    (En attente)
+                                @endif
+                            @else
+                                En attente
+                            @endif
                         </span>
                     </div>
 
@@ -139,6 +150,47 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Liste des devis -->
+            @if($project->devis->count() > 0)
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold mb-4">Devis</h2>
+                <div class="space-y-4">
+                    @foreach($project->devis as $devis)
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium">Devis #{{ $devis->Reference }}</h3>
+                                <p class="text-sm text-gray-600">
+                                    Émis le {{ \Carbon\Carbon::parse($devis->DateEmission)->format('d/m/Y') }}
+                                    @if($devis->DateValidite)
+                                        - Valide jusqu'au {{ \Carbon\Carbon::parse($devis->DateValidite)->format('d/m/Y') }}
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium
+                                    @if($devis->Statut === 'Accepté') bg-green-100 text-green-800
+                                    @elseif($devis->Statut === 'Refusé') bg-red-100 text-red-800
+                                    @else bg-yellow-100 text-yellow-800
+                                    @endif">
+                                    {{ $devis->Statut ?? 'En attente' }}
+                                </span>
+                                <a href="{{ route('devis.show', $devis->DevisID) }}" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600">
+                            <p>Montant HT : {{ number_format($devis->TotalHT, 2) }} TND</p>
+                            <p>TVA ({{ $devis->TVA }}%) : {{ number_format($devis->TotalHT * $devis->TVA / 100, 2) }} TND</p>
+                            <p class="font-medium">Total TTC : {{ number_format($devis->TotalTTC, 2) }} TND</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>
