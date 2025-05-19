@@ -7,20 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class TimeTracking extends Model
 {
-    protected $primaryKey = 'TimeTrackID';
+    protected $table = 'time_tracking';
+    protected $primaryKey = 'TrackingID';
 
     protected $fillable = [
-        'TaskID', 'DeveloperID', 'StartTime', 'EndTime', 'Duration'
+        'UserID',
+        'TaskID',
+        'Description',
+        'StartTime',
+        'EndTime'
+    ];
+
+    protected $casts = [
+        'StartTime' => 'datetime',
+        'EndTime' => 'datetime'
     ];
 
     // Relationships
-    public function task()
+    public function user()
     {
-        return $this->belongsTo(Task::class, 'TaskID');
+        return $this->belongsTo(User::class, 'UserID', 'UserID');
     }
 
-    public function developer()
+    public function task()
     {
-        return $this->belongsTo(User::class, 'DeveloperID');
+        return $this->belongsTo(Task::class, 'TaskID', 'TaskID');
     }
 }

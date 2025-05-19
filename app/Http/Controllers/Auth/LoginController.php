@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -25,7 +23,19 @@ class LoginController extends Controller
         $credentials = $request->only('Username', 'PasswordHash');
 
         if (Auth::attempt(['Username' => $credentials['Username'], 'password' => $credentials['PasswordHash']])) {
-            return redirect()->intended('/home');
+            $user = Auth::user();
+            
+            // Redirection en fonction du rôle
+            switch ($user->Role) {
+                case 'Admin':
+                    return redirect()->route('admin.dashboard');
+                case 'Client':
+                    return redirect()->route('client.dashboard');
+                case 'Freelancer':
+                    return redirect()->route('freelancer.dashboard');
+                default:
+                    return redirect('/home');
+            }
         }
 
         return back()->withErrors([

@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\AdminTestimonialController;
 use App\Http\Controllers\Client\ClientTestimonialController;
 use App\Models\User;
 use App\Models\Service;
+use Illuminate\Support\Facades\Auth;
 
 // ------------------ ROUTES PUBLIQUES ------------------
 
@@ -135,14 +136,32 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/analytics/{analyticsId}/user', [AnalyticsController::class, 'getAnalyticsWithUser']);
     Route::delete('/analytics/{analyticsId}', [AnalyticsController::class, 'deleteAnalytics']);
 
-    // Admin
-    Route::prefix('admin')->group(function () {
+    // Routes du tableau de bord
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Routes Admin
+    Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/projects', [AdminController::class, 'index'])->name('admin.projects');
         Route::get('/projects/{id}/show', [AdminController::class, 'show'])->name('admin.projects.show');
         Route::post('/projects/{id}/approve', [AdminController::class, 'approveProject'])->name('admin.projects.approve');
         Route::post('/projects/{id}/reject', [AdminController::class, 'rejectProject'])->name('admin.projects.reject');
         Route::post('/projects/{id}/assign', [AdminController::class, 'assignProject'])->name('admin.projects.assign');
+    });
+
+    // Routes Client
+    Route::middleware(['auth', \App\Http\Middleware\ClientAccessMiddleware::class])->prefix('client')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('client.dashboard');
+        Route::get('/projects', [ProjectController::class, 'index'])->name('client.projects');
+        Route::get('/projects/create', [ProjectController::class, 'create'])->name('client.request');
+        Route::get('/invoices', [InvoiceController::class, 'index'])->name('client.invoices');
+    });
+
+    // Routes Freelancer
+    Route::middleware(['auth', \App\Http\Middleware\FreelancerMiddleware::class])->prefix('freelancer')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('freelancer.dashboard');
+        Route::get('/tasks', [TaskController::class, 'index'])->name('freelancer.tasks');
+        Route::get('/projects', [ProjectController::class, 'index'])->name('freelancer.projects');
     });
 
     // Profil utilisateur
@@ -153,8 +172,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/clientslist', [ContactController::class, 'listclient'])->name('clients.index');
 
     // Chat
-    Route::get('/chat/messages', [ChatController::class, 'getMessages']);
-    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    Route::get('/chat/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/list', [ChatController::class, 'list'])->name('chat.list');
+    Route::get('/chat/{clientId}', [ChatController::class, 'show'])->name('chat.show');
 
     // Blog (admin)
     Route::get('/test', [BlogController::class, 'create'])->name('blogs.create');
@@ -181,8 +202,25 @@ Route::middleware(['auth'])->group(function () {
 
     // Timeline du projet
     Route::get('/projects/{projectId}/timeline', [ProjectTimelineController::class, 'show'])->name('projects.timeline');
-});
 
+    // Routes pour les tâches
+    Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/create', [App\Http\Controllers\TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+    Route::get('/tasks/{id}', [App\Http\Controllers\TaskController::class, 'show'])->name('tasks.show');
+    Route::get('/tasks/{id}/edit', [App\Http\Controllers\TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('/tasks/{id}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{id}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::post('/tasks/{id}/assign', [App\Http\Controllers\TaskController::class, 'assignTask'])->name('tasks.assign');
+    Route::put('/tasks/{id}/status', [App\Http\Controllers\TaskController::class, 'updateStatus'])->name('tasks.status');
+    Route::get('/my-tasks', [App\Http\Controllers\TaskController::class, 'developerTasks'])->name('tasks.developer');
+
+    // Time Tracking Routes
+    Route::get('/time-tracking', [TimeTrackingController::class, 'index'])->name('time-tracking.index');
+    Route::post('/time-tracking/start', [TimeTrackingController::class, 'start'])->name('time-tracking.start');
+    Route::post('/time-tracking/stop', [TimeTrackingController::class, 'stop'])->name('time-tracking.stop');
+    Route::get('/time-tracking/active-session', [TimeTrackingController::class, 'getActiveSession'])->name('time-tracking.active-session');
+});
 
 // Routes pour les témoignages clients
 Route::middleware(['auth', \App\Http\Middleware\ClientAccessMiddleware::class])->prefix('client')->name('client.')->group(function () {

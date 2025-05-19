@@ -11,6 +11,7 @@ class ChatMessage extends Model
     protected $fillable = [
         'ProjectID',
         'SenderID',
+        'ReceiverID',
         'Message',
         'IsRead',
         'AttachmentURL'
@@ -34,10 +35,10 @@ class ChatMessage extends Model
         return $this->belongsTo(User::class, 'SenderID', 'UserID');
     }
 
-    // Relationship to the receiver
+    // Relation avec le destinataire
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(User::class, 'ReceiverID', 'UserID');
     }
 }
 
