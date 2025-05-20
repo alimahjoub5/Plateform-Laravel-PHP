@@ -15,7 +15,7 @@ class UserController
 
     public function index()
     {
-        $users = User::all(); // Récupère tous les utilisateurs
+        $users = User::orderBy('UserID', 'desc')->paginate(10);
         return view('users.index', compact('users'));
     }
 

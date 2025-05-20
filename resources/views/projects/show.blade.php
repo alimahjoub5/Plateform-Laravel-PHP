@@ -191,6 +191,44 @@
                 </div>
             </div>
             @endif
+
+            <!-- Section des actions -->
+            <div class="mt-8 border-t pt-6">
+                <h2 class="text-xl font-semibold mb-4">Actions</h2>
+                <div class="flex flex-wrap gap-4">
+                    @if(auth()->user()->Role === 'Client' && $project->ClientID === auth()->user()->UserID)
+                        @if($project->Status !== 'Cancelled' && $project->Status !== 'Completed')
+                            <form action="{{ route('projects.cancel', $project->ProjectID) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-700 text-white font-bold rounded">
+                                    <i class="fas fa-ban mr-2"></i>
+                                    Annuler le projet
+                                </button>
+                            </form>
+                        @endif
+                    @endif
+
+                    <a href="{{ route('projects.timeline', $project->ProjectID) }}" 
+                       class="inline-flex items-center px-4 py-2 bg-purple-500 hover:bg-purple-700 text-white font-bold rounded">
+                        <i class="fas fa-history mr-2"></i>
+                        Voir la timeline
+                    </a>
+
+                    <a href="{{ route('chat.index', $project->ProjectID) }}" 
+                       class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-700 text-white font-bold rounded">
+                        <i class="fas fa-comments mr-2"></i>
+                        Accéder au chat
+                    </a>
+
+                    @if($project->devis->count() > 0)
+                        <a href="{{ route('devis.show', $project->devis->first()->DevisID) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-700 text-white font-bold rounded">
+                            <i class="fas fa-file-invoice mr-2"></i>
+                            Voir le devis
+                        </a>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>

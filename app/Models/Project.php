@@ -107,4 +107,11 @@ public function client()
     {
         return $this->hasMany(ChatMessage::class, 'ProjectID', 'ProjectID');
     }
+
+    public function freelancers()
+    {
+        return $this->belongsToMany(User::class, 'freelancer_project', 'ProjectID', 'FreelancerID')
+                    ->where('Role', 'freelancer')
+                    ->withTimestamps();
+    }
 }

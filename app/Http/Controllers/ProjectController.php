@@ -246,4 +246,45 @@ class ProjectController extends Controller
 
         return redirect()->route('client.services')->with('success', 'Le projet a été annulé avec succès.');
     }
+
+    public function showAssignForm($id)
+    {
+        $project = Project::findOrFail($id);
+        $freelancers = User::where('Role', 'freelancer')->get();
+        
+        return view('projects.assign', compact('project', 'freelancers'));
+    }
+
+    public function assignFreelancers(Request $request, $id)
+    {
+        $request->validate([
+            'freelancers' => 'array',
+            'freelancers.*' => 'exists:users,UserID,Role,freelancer'
+        ]);
+
+        $project = Project::findOrFail($id);
+        
+        // Vérifier que tous les IDs sont bien des freelancers
+        $freelancerIds = User::whereIn('UserID', $request->freelancers ?? [])
+                            ->where('Role', 'freelancer')
+                            ->pluck('UserID')
+                            ->toArray();
+
+        // Mettre à jour le statut du projet à "In Progress"
+        $project->update(['Status' => 'In Progress']);
+
+        // Synchroniser les freelancers
+        $project->freelancers()->sync($freelancerIds);
+
+        // Envoyer une notification aux freelancers affectés
+        foreach ($freelancerIds as $freelancerId) {
+            Notification::create([
+                'UserID' => $freelancerId,
+                'Message' => 'Vous avez été affecté au projet "' . $project->Title . '".'
+            ]);
+        }
+
+        return redirect()->route('projects.show', $id)
+                        ->with('success', 'Les freelancers ont été affectés avec succès et le projet est maintenant en cours.');
+    }
 }

@@ -122,6 +122,7 @@
     <!-- Contenu principal avec sidebar -->
     <div class="flex">
         <!-- Sidebar dynamique -->
+        @auth
         <aside class="bg-blue-600 text-white w-64 min-h-screen p-6 shadow-lg">
             <h3 class="text-xl font-bold mb-6 flex items-center text-white">
                 <i class="fas fa-th-large mr-2"></i> Menu Principal
@@ -212,15 +213,8 @@
                     </li>
                     <li class="mb-4">
                         <h4 class="text-sm font-semibold text-white uppercase mb-2">Projets & Tâches</h4>
-                        <a href="{{ route('projects.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes projets</a>
-                        <a href="{{ route('tasks.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes tâches</a>
-                    </li>
-                    <li class="mb-4">
-                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Ressources</h4>
-                        <a href="{{ route('notifications.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Notifications</a>
-                        <a href="{{ route('portfolios.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Portfolios</a>
-                        <a href="{{ route('testimonials.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Témoignages</a>
-                        <a href="{{ route('services.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Services</a>
+                        <a href="{{ route('freelancer.projects') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes projets</a>
+                        <a href="{{ route('freelancer.tasks') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes tâches</a>
                     </li>
                     <li class="mb-4">
                         <h4 class="text-sm font-semibold text-white uppercase mb-2">Communication</h4>
@@ -235,9 +229,10 @@
                 @endif
             </ul>
         </aside>
+        @endauth
 
         <!-- Contenu principal -->
-        <main class="flex-1 p-4">
+        <main class="flex-1 p-6">
             <!-- Notifications flash -->
             @if(session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">

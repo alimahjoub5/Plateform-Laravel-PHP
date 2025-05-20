@@ -35,6 +35,8 @@ use App\Http\Controllers\Client\ClientTestimonialController;
 use App\Models\User;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 // ------------------ ROUTES PUBLIQUES ------------------
 
@@ -68,7 +70,7 @@ Route::get('/tags', [PortfolioController::class, 'getTags'])->name('tags.autocom
 
 // ------------------ ROUTES PROTÉGÉES ------------------
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dashboard contact info
     Route::get('/dashboard/contact-info/edit', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
@@ -244,5 +246,54 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
     Route::post('/testimonials/{testimonial}/reject', [AdminTestimonialController::class, 'reject'])->name('testimonials.reject');
     Route::delete('/testimonials/{testimonial}', [AdminTestimonialController::class, 'destroy'])->name('testimonials.destroy');
 });
+
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
+    Route::get('/projects/{id}/assign', [ProjectController::class, 'showAssignForm'])->name('projects.assign');
+    Route::post('/projects/{id}/assign', [ProjectController::class, 'assignFreelancers']);
+});
+
+// Route de test pour vérifier l'authentification
+Route::get('/test-auth', function () {
+    if (auth()->check()) {
+        return response()->json([
+            'authenticated' => true,
+            'user' => [
+                'id' => auth()->id(),
+                'username' => auth()->user()->Username,
+                'role' => auth()->user()->Role,
+            ]
+        ]);
+    }
+    return response()->json(['authenticated' => false]);
+})->name('test.auth');
+
+// Route de test pour vérifier le projet
+Route::get('/test-project/{id}', function ($id) {
+    $project = \App\Models\Project::find($id);
+    if ($project) {
+        return response()->json([
+            'exists' => true,
+            'project' => [
+                'id' => $project->ProjectID,
+                'title' => $project->Title,
+                'status' => $project->Status,
+            ]
+        ]);
+    }
+    return response()->json(['exists' => false]);
+})->name('test.project');
+
+// Routes de vérification d'email
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\EmailVerificationController::class, 'verify'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
+Route::post('/email/verification-notification', [App\Http\Controllers\Auth\EmailVerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
 
 

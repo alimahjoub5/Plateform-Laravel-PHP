@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -20,10 +21,19 @@ class LoginController extends Controller
             'PasswordHash' => 'required|string',
         ]);
 
-        $credentials = $request->only('Username', 'PasswordHash');
+        // Trouver l'utilisateur par son nom d'utilisateur
+        $user = \App\Models\User::where('Username', $request->Username)->first();
 
-        if (Auth::attempt(['Username' => $credentials['Username'], 'password' => $credentials['PasswordHash']])) {
-            $user = Auth::user();
+        // Vérifier si l'utilisateur existe et si le mot de passe correspond
+        if ($user && Hash::check($request->PasswordHash, $user->PasswordHash)) {
+            Auth::login($user);
+            
+            // Vérifier si l'email est vérifié
+            if (!$user->hasVerifiedEmail()) {
+                Auth::logout();
+                return redirect()->route('verification.notice')
+                    ->with('warning', 'Veuillez vérifier votre adresse email avant de vous connecter.');
+            }
             
             // Redirection en fonction du rôle (insensible à la casse)
             switch (strtolower($user->Role)) {
@@ -39,18 +49,15 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'Username' => 'The provided credentials do not match our records.',
+            'Username' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.',
         ]);
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 }
