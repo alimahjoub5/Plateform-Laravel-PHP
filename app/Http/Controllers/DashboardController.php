@@ -39,8 +39,8 @@ class DashboardController extends Controller
         $userActionsLabels = $userActions->pluck('Action');
         $userActionsData = $userActions->pluck('total');
 
-        // Redirection selon le rôle
-        if ($user->Role === 'admin') {
+        // Redirection selon le rôle (insensible à la casse)
+        if (strtolower($user->Role) === 'admin') {
             // Statistiques pour l'admin
             $totalProjects = Project::count();
             $pendingProjects = Project::where('ApprovalStatus', 'Pending')->count();
@@ -65,7 +65,7 @@ class DashboardController extends Controller
                 'userActionsData'
             ));
         } 
-        elseif ($user->Role === 'client') {
+        elseif (strtolower($user->Role) === 'client') {
             // Statistiques pour le client
             $projects = Project::where('ClientID', $user->UserID)->get();
             $totalProjects = $projects->count();
@@ -75,6 +75,12 @@ class DashboardController extends Controller
             $pendingInvoices = Invoice::where('ClientID', $user->UserID)
                                     ->where('Status', 'Pending')
                                     ->count();
+
+            // Récupérer les 5 dernières factures du client
+            $recentInvoices = Invoice::where('ClientID', $user->UserID)
+                                    ->latest()
+                                    ->take(5)
+                                    ->get();
             
             return view('client.dashboard', compact(
                 'projects',
@@ -83,6 +89,7 @@ class DashboardController extends Controller
                 'completedProjects',
                 'totalInvoices',
                 'pendingInvoices',
+                'recentInvoices',
                 'totalVisits',
                 'activeUsers',
                 'mostUsedDevice',

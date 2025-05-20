@@ -121,135 +121,118 @@
 
     <!-- Contenu principal avec sidebar -->
     <div class="flex">
-        <!-- Sidebar -->
-        <aside class="bg-blue-800 text-white w-64 min-h-screen p-6 shadow-lg">
-            <!-- Titre du menu -->
+        <!-- Sidebar dynamique -->
+        <aside class="bg-blue-600 text-white w-64 min-h-screen p-6 shadow-lg">
             <h3 class="text-xl font-bold mb-6 flex items-center text-white">
                 <i class="fas fa-th-large mr-2"></i> Menu Principal
             </h3>
-
-            <!-- Liste des liens -->
             <ul class="space-y-4">
-                <!-- Section Dashboard -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-chart-line mr-2"></i>Tableau de bord
-                    </h4>
-                    <a href="{{ route('home') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
-                    </a>
-                </li>
-
-                <!-- Section Gestion des Projets -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-folder-open mr-2"></i>Gestion des Projets
-                    </h4>
-                    <a href="{{ route('admin.projects') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-tasks mr-3"></i> Liste des projets
-                    </a>
-                    <a href="{{ route('blogs.dashboard') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-newspaper mr-3"></i> Gérer les blogs
-                    </a>
-                    <a href="{{ route('portfolios.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-briefcase mr-3"></i> Portfolios
-                    </a>
-                    <a href="{{ route('projects.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-project-diagram mr-3"></i> Mes Projets
-                    </a>
-                    <a href="{{ route('client.services') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-list mr-3"></i> Mes Projets Client
-                    </a>
-                </li>
-
-                <!-- Section Gestion des Clients -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-users-cog mr-2"></i>Gestion des Clients
-                    </h4>
-                    <a href="{{ route('clients.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-address-book mr-3"></i> Liste des clients
-                    </a>
-                    <a href="{{ route('client.request') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-plus-circle mr-3"></i> Nouvelle Demande
-                    </a>
-                    <a href="{{ route('client.testimonials.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-comments mr-3"></i> Mes témoignages
-                    </a>
-                </li>
-
-                <!-- Section Gestion des Tâches -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-tasks mr-2"></i>Gestion des Tâches
-                    </h4>
-                    <a href="{{ route('tasks.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-list-check mr-3"></i> Liste des tâches
-                    </a>
-                    <a href="{{ route('tasks.developer') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-user-check mr-3"></i> Mes tâches
-                    </a>
-                    <a href="{{ route('time-tracking.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-clock mr-3"></i> Suivi du temps
-                    </a>
-                </li>
-
-                <!-- Section Communication -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-comments mr-2"></i>Communication
-                    </h4>
-                    <a href="{{ route('meetings.calendar') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-calendar-week mr-3"></i> Calendrier
-                    </a>
-                    <a href="{{ route('meetings.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-handshake mr-3"></i> Réunions
-                    </a>
-                    <a href="{{ route('chat.list') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-comments mr-3"></i> Messages
-                    </a>
-                    <a href="{{ route('notifications.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-bell mr-3"></i> Notifications
-                        @if(isset($unreadNotificationsCount) && $unreadNotificationsCount > 0)
-                            <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-2">{{ $unreadNotificationsCount }}</span>
-                        @endif
-                    </a>
-                </li>
-
-                <!-- Section Administration -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-cogs mr-2"></i>Administration
-                    </h4>
-                    <a href="{{ route('services.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-tools mr-3"></i> Services
-                    </a>
-                    <a href="{{ route('users.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-users mr-3"></i> Utilisateurs
-                    </a>
-                    <a href="{{ route('dashboard.contact-info.edit') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-address-card mr-3"></i> Contact
-                    </a>
-                    <a href="{{ route('invoices.index') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-file-invoice-dollar mr-3"></i> Factures
-                    </a>
-                </li>
-
-                <!-- Section Profil -->
-                <li>
-                    <h4 class="text-sm font-semibold text-blue-200 uppercase tracking-wider mb-2">
-                        <i class="fas fa-user mr-2"></i>Profil
-                    </h4>
-                    <a href="{{ route('profile') }}" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white">
-                        <i class="fas fa-user-circle mr-3"></i> Mon profil
-                    </a>
-                    <form action="{{ route('logout') }}" method="POST" class="block">
-                        @csrf
-                        <button type="submit" class="flex items-center p-2 text-sm hover:bg-blue-700 rounded-lg transition duration-300 text-white w-full">
-                            <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
-                        </button>
-                    </form>
-                </li>
+                {{-- ADMIN --}}
+                @if(strtolower(Auth::user()->Role) === 'admin')
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Tableau de bord</h4>
+                        <a href="{{ route('admin.dashboard') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Dashboard Admin</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Gestion des utilisateurs</h4>
+                        <a href="{{ route('users.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Liste des utilisateurs</a>
+                        <a href="{{ route('users.create') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Créer un utilisateur</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Gestion des projets</h4>
+                        <a href="{{ route('admin.projects') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Liste des projets</a>
+                        <a href="{{ route('projects.create') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Créer un projet</a>
+                        <a href="{{ route('tasks.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Liste des tâches</a>
+                        <a href="{{ route('tasks.create') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Créer une tâche</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Factures & Devis</h4>
+                        <a href="{{ route('invoices.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Factures</a>
+                        <a href="{{ route('projects.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Créer une facture</a>
+                        <a href="{{ route('devis.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Devis</a>
+                        <a href="{{ route('devis.create') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Créer un devis</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Ressources</h4>
+                        <a href="{{ route('portfolios.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Portfolios</a>
+                        <a href="{{ route('testimonials.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Témoignages</a>
+                        <a href="{{ route('services.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Services</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Communication</h4>
+                        <a href="{{ route('chat.list') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Messages</a>
+                        <a href="{{ route('meetings.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Réunions</a>
+                        <a href="{{ route('meetings.calendar') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Planning</a>
+                        <a href="{{ route('notifications.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Notifications</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Rapports & Statistiques</h4>
+                        <a href="{{ route('admin.dashboard') }}#stats" class="block p-2 text-white hover:bg-blue-700 rounded">Statistiques générales</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Paramètres</h4>
+                        <a href="{{ route('profile') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mon profil</a>
+                    </li>
+                @endif
+                {{-- CLIENT --}}
+                @if(strtolower(Auth::user()->Role) === 'client')
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Tableau de bord</h4>
+                        <a href="{{ route('client.dashboard') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Dashboard Client</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Projets & Devis</h4>
+                        <a href="{{ route('projects.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes projets</a>
+                        <a href="{{ route('client.devis.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes devis</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Factures & Paiements</h4>
+                        <a href="{{ route('invoices.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes factures</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Notifications</h4>
+                        <a href="{{ route('notifications.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Notifications</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Communication</h4>
+                        <a href="{{ route('chat.list') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Messages</a>
+                        <a href="{{ route('meetings.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Réunions</a>
+                        <a href="{{ route('meetings.calendar') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Planning</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Profil</h4>
+                        <a href="{{ route('profile') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mon profil</a>
+                    </li>
+                @endif
+                {{-- FREELANCER --}}
+                @if(strtolower(Auth::user()->Role) === 'freelancer')
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Tableau de bord</h4>
+                        <a href="{{ route('freelancer.dashboard') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Dashboard Freelancer</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Projets & Tâches</h4>
+                        <a href="{{ route('projects.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes projets</a>
+                        <a href="{{ route('tasks.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mes tâches</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Ressources</h4>
+                        <a href="{{ route('notifications.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Notifications</a>
+                        <a href="{{ route('portfolios.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Portfolios</a>
+                        <a href="{{ route('testimonials.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Témoignages</a>
+                        <a href="{{ route('services.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Services</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Communication</h4>
+                        <a href="{{ route('chat.list') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Messages</a>
+                        <a href="{{ route('meetings.index') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Réunions</a>
+                        <a href="{{ route('meetings.calendar') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Planning</a>
+                    </li>
+                    <li class="mb-4">
+                        <h4 class="text-sm font-semibold text-white uppercase mb-2">Profil</h4>
+                        <a href="{{ route('profile') }}" class="block p-2 text-white hover:bg-blue-700 rounded">Mon profil</a>
+                    </li>
+                @endif
             </ul>
         </aside>
 

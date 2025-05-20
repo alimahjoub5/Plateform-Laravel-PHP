@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8">Tableau de Bord Client</h1>
 
-    <!-- Statistiques -->
+    <!-- Statistiques du client -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Projets -->
         <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-blue-500">
@@ -20,7 +20,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Projets En Cours -->
         <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-yellow-500">
             <div class="flex items-center">
@@ -35,7 +34,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Projets Terminés -->
         <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500">
             <div class="flex items-center">
@@ -50,7 +48,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Factures En Attente -->
         <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-red-500">
             <div class="flex items-center">
@@ -67,7 +64,7 @@
         </div>
     </div>
 
-    <!-- Projets Récents -->
+    <!-- Projets du client -->
     <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold">Mes Projets</h2>
@@ -123,7 +120,7 @@
         </div>
     </div>
 
-    <!-- Factures Récentes -->
+    <!-- Factures Récentes du client -->
     <div class="bg-white rounded-lg shadow-lg p-6">
         <h2 class="text-xl font-semibold mb-4">Factures Récentes</h2>
         <div class="overflow-x-auto">

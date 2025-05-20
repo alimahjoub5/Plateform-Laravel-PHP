@@ -25,13 +25,13 @@ class LoginController extends Controller
         if (Auth::attempt(['Username' => $credentials['Username'], 'password' => $credentials['PasswordHash']])) {
             $user = Auth::user();
             
-            // Redirection en fonction du rôle
-            switch ($user->Role) {
-                case 'Admin':
+            // Redirection en fonction du rôle (insensible à la casse)
+            switch (strtolower($user->Role)) {
+                case 'admin':
                     return redirect()->route('admin.dashboard');
-                case 'Client':
+                case 'client':
                     return redirect()->route('client.dashboard');
-                case 'Freelancer':
+                case 'freelancer':
                     return redirect()->route('freelancer.dashboard');
                 default:
                     return redirect('/home');

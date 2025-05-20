@@ -3,133 +3,166 @@
 @section('title', 'Créer un Portfolio')
 
 @section('content')
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Créer un nouveau Portfolio</h1>
-        <form action="{{ route('portfolios.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-
-            <!-- Champ Projet -->
-            <div class="form-group mb-3">
-                <label for="ProjectID" class="form-label">Projet</label>
-                <select name="ProjectID" class="form-control @error('ProjectID') is-invalid @enderror" required>
-                    <option value="">Sélectionnez un projet terminé</option>
-                    @foreach ($projects as $project)
-                        <option value="{{ $project->ProjectID }}" {{ old('ProjectID') == $project->ProjectID ? 'selected' : '' }}>
-                            {{ $project->Title }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('ProjectID')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto">
+            <!-- En-tête -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
+                    <h1 class="text-2xl font-bold text-white">Créer un nouveau Portfolio</h1>
+                </div>
             </div>
 
-            <!-- Champ Titre -->
-            <div class="form-group mb-3">
-                <label for="Title" class="form-label">Titre</label>
-                <input type="text" name="Title" class="form-control @error('Title') is-invalid @enderror" value="{{ old('Title') }}" required>
-                @error('Title')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <!-- Formulaire -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <form action="{{ route('portfolios.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+                    @csrf
 
-            <!-- Champ Description -->
-            <div class="form-group mb-3">
-                <label for="Description" class="form-label">Description</label>
-                <textarea name="Description" class="form-control @error('Description') is-invalid @enderror" required>{{ old('Description') }}</textarea>
-                @error('Description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+                    <!-- Champ Projet -->
+                    <div class="space-y-2">
+                        <label for="ProjectID" class="block text-sm font-medium text-gray-700">Projet</label>
+                        <select name="ProjectID" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('ProjectID') border-red-500 @enderror" required>
+                            <option value="">Sélectionnez un projet terminé</option>
+                            @foreach ($projects as $project)
+                                <option value="{{ $project->ProjectID }}" {{ old('ProjectID') == $project->ProjectID ? 'selected' : '' }}>
+                                    {{ $project->Title }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('ProjectID')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-            <!-- Champ Image -->
-            <div class="form-group mb-3">
-                <label for="ImageURL" class="form-label">Image</label>
-                <input type="file" name="ImageURL" class="form-control @error('ImageURL') is-invalid @enderror">
-                @error('ImageURL')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+                    <!-- Champ Titre -->
+                    <div class="space-y-2">
+                        <label for="Title" class="block text-sm font-medium text-gray-700">Titre</label>
+                        <input type="text" name="Title" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('Title') border-red-500 @enderror" 
+                            value="{{ old('Title') }}" required>
+                        @error('Title')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-            <!-- Champ Lien en direct -->
-            <div class="form-group mb-3">
-                <label for="LiveLink" class="form-label">Lien en direct</label>
-                <input type="text" name="LiveLink" class="form-control @error('LiveLink') is-invalid @enderror" value="{{ old('LiveLink') }}">
-                @error('LiveLink')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+                    <!-- Champ Description -->
+                    <div class="space-y-2">
+                        <label for="Description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea name="Description" rows="4" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('Description') border-red-500 @enderror" 
+                            required>{{ old('Description') }}</textarea>
+                        @error('Description')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-            <!-- Champ Catégorie -->
-            <div class="form-group mb-3">
-                <label for="Category" class="form-label">Catégorie</label>
-                <select name="Category" class="form-control @error('Category') is-invalid @enderror" required>
-                    <option value="Web Development" {{ old('Category') == 'Web Development' ? 'selected' : '' }}>Développement Web</option>
-                    <option value="Mobile App" {{ old('Category') == 'Mobile App' ? 'selected' : '' }}>Application Mobile</option>
-                    <option value="Design" {{ old('Category') == 'Design' ? 'selected' : '' }}>Design</option>
-                    <option value="Other" {{ old('Category') == 'Other' ? 'selected' : '' }}>Autre</option>
-                </select>
-                @error('Category')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+                    <!-- Champ Image -->
+                    <div class="space-y-2">
+                        <label for="ImageURL" class="block text-sm font-medium text-gray-700">Image</label>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 transition duration-200">
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="ImageURL" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                        <span>Télécharger une image</span>
+                                        <input type="file" name="ImageURL" class="sr-only" accept="image/*">
+                                    </label>
+                                    <p class="pl-1">ou glisser-déposer</p>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 10MB</p>
+                            </div>
+                        </div>
+                        @error('ImageURL')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-<!-- Champ Tags avec des boutons à cocher -->
-<div class="form-group mb-3">
-    <label class="form-label">Tags</label>
-    <div>
-        @foreach ($tags as $tag)
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" name="Tags[]" id="tag_{{ $tag }}" value="{{ $tag }}"
-                    {{ in_array($tag, json_decode(old('Tags', '[]'), true)) ? 'checked' : '' }}>
-                <label class="form-check-label" for="tag_{{ $tag }}">{{ $tag }}</label>
+                    <!-- Champ Lien en direct -->
+                    <div class="space-y-2">
+                        <label for="LiveLink" class="block text-sm font-medium text-gray-700">Lien en direct</label>
+                        <input type="text" name="LiveLink" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('LiveLink') border-red-500 @enderror" 
+                            value="{{ old('LiveLink') }}" placeholder="https://...">
+                        @error('LiveLink')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Champ Catégorie -->
+                    <div class="space-y-2">
+                        <label for="Category" class="block text-sm font-medium text-gray-700">Catégorie</label>
+                        <select name="Category" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('Category') border-red-500 @enderror" 
+                            required>
+                            <option value="Web Development" {{ old('Category') == 'Web Development' ? 'selected' : '' }}>Développement Web</option>
+                            <option value="Mobile App" {{ old('Category') == 'Mobile App' ? 'selected' : '' }}>Application Mobile</option>
+                            <option value="Design" {{ old('Category') == 'Design' ? 'selected' : '' }}>Design</option>
+                            <option value="Other" {{ old('Category') == 'Other' ? 'selected' : '' }}>Autre</option>
+                        </select>
+                        @error('Category')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Champ Tags -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Tags</label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach ($tags as $tag)
+                                <label class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-800 cursor-pointer hover:bg-gray-200 transition duration-200">
+                                    <input type="checkbox" name="Tags[]" value="{{ $tag }}" 
+                                        class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                        {{ in_array($tag, json_decode(old('Tags', '[]'), true)) ? 'checked' : '' }}>
+                                    <span class="ml-2">{{ $tag }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('Tags')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                        <p class="text-sm text-gray-500 mt-1">Sélectionnez un ou plusieurs tags.</p>
+                    </div>
+
+                    <!-- Boutons d'action -->
+                    <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <a href="{{ route('portfolios.index') }}" 
+                            class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                            Annuler
+                        </a>
+                        <button type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                            Créer le portfolio
+                        </button>
+                    </div>
+                </form>
             </div>
-        @endforeach
+        </div>
     </div>
-    @error('Tags')
-        <div class="invalid-feedback d-block">{{ $message }}</div>
-    @enderror
-    <small class="form-text text-muted">Sélectionnez un ou plusieurs tags.</small>
 </div>
 
-<!-- Bouton de soumission -->
-<div class="form-group mb-3">
-    <button type="submit" class="btn btn-primary">Créer</button>
-    <a href="{{ route('portfolios.index') }}" class="btn btn-secondary">Annuler</a>
-</div>
-        </form>
-    </div>
-
-    @push('scripts')
-    <script>
-        $(function() {
-            // Activer l'autocomplete sur le champ Tags
-            $("#Tags").autocomplete({
-                source: function(request, response) {
-                    $.ajax({
-                        url: "{{ route('tags.autocomplete') }}",
-                        dataType: "json",
-                        data: {
-                            term: request.term // Le terme saisi par l'utilisateur
-                        },
-                        success: function(data) {
-                            response(data); // Renvoyer les suggestions
-                        }
-                    });
-                },
-                minLength: 1, // Nombre minimum de caractères avant de déclencher l'autocomplete
-                select: function(event, ui) {
-                    // Ajouter le tag sélectionné au champ Tags
-                    let currentTags = $("#Tags").val();
-                    if (currentTags) {
-                        $("#Tags").val(currentTags + ", " + ui.item.value);
-                    } else {
-                        $("#Tags").val(ui.item.value);
-                    }
-                    return false; // Empêcher l'ajout automatique du tag
+@push('scripts')
+<script>
+    // Prévisualisation de l'image
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.className = 'mt-2 mx-auto h-32 w-auto object-cover rounded-lg';
+                const container = document.querySelector('.border-dashed');
+                const existingPreview = container.querySelector('img');
+                if (existingPreview) {
+                    existingPreview.remove();
                 }
-            });
-        });
-    </script>
-    @endpush
+                container.appendChild(preview);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+@endpush
 @endsection

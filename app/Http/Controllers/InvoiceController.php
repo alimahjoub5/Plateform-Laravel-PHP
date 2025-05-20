@@ -8,6 +8,7 @@ use App\Models\payments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ContactInfo;
 
 class InvoiceController extends Controller
 {
@@ -27,6 +28,15 @@ class InvoiceController extends Controller
         return $pdf->download('facture-' . $invoice->InvoiceID . '.pdf');
     }
 
+    public function pdf($id)
+    {
+        $invoice = Invoice::with(['client', 'project', 'payments'])->findOrFail($id);
+        $contactInfo = ContactInfo::first();
+
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice', 'contactInfo'));
+        
+        return $pdf->download('facture-' . $invoice->InvoiceID . '.pdf');
+    }
 
     public function index()
     {
@@ -106,6 +116,12 @@ class InvoiceController extends Controller
      */
     public function edit(Invoice $invoice)
     {
+        // Vérifier si l'utilisateur est un admin
+        if (Auth::user()->Role !== 'Admin') {
+            return redirect()->route('invoices.show', ['invoice' => $invoice->InvoiceID])
+                ->with('error', 'Vous n\'avez pas les droits pour modifier cette facture.');
+        }
+
         // Récupérer le projet et le client associés
         $project = $invoice->project;
         $client = $invoice->client;
@@ -118,11 +134,18 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
+        // Vérifier si l'utilisateur est un admin
+        if (Auth::user()->Role !== 'Admin') {
+            return redirect()->route('invoices.show', ['invoice' => $invoice->InvoiceID])
+                ->with('error', 'Vous n\'avez pas les droits pour modifier cette facture.');
+        }
+
         // Validation des données
         $request->validate([
             'Amount' => 'required|numeric|min:0',
             'DueDate' => 'required|date',
             'Status' => 'required|in:Pending,Paid,Overdue',
+            'Description' => 'nullable|string',
         ]);
 
         // Mettre à jour la facture
@@ -130,11 +153,12 @@ class InvoiceController extends Controller
             'Amount' => $request->Amount,
             'DueDate' => $request->DueDate,
             'Status' => $request->Status,
+            'Description' => $request->Description,
         ]);
 
         // Redirection avec un message de succès
-        return redirect()->route('invoices.show', $invoice->InvoiceID)
-                         ->with('success', 'La facture a été mise à jour avec succès.');
+        return redirect()->route('invoices.show', ['invoice' => $invoice->InvoiceID])
+            ->with('success', 'La facture a été mise à jour avec succès.');
     }
 
     /**

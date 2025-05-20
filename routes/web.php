@@ -26,7 +26,9 @@ use App\Http\Controllers\{
     MeetingController,
     ChatController,
     TestimonialController,
-    ProjectTimelineController
+    ProjectTimelineController,
+    ClientScheduleController,
+    NegotiationController
 };
 use App\Http\Controllers\Admin\AdminTestimonialController;
 use App\Http\Controllers\Client\ClientTestimonialController;
@@ -87,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
     // Devis
     Route::resource('devis', DevisController::class);
     Route::post('/devis/{devis}/action', [DevisController::class, 'action'])->name('client.devis.action');
+    Route::post('/devis/{devis}/negotiate', [NegotiationController::class, 'store'])->name('devis.negotiate');
 
     // Devis côté client
     Route::prefix('client/devis')->name('client.devis.')->group(function () {
@@ -96,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{devis}/reject', [ClientDevisController::class, 'reject'])->name('reject');
         Route::post('/{devis}/request-changes', [ClientDevisController::class, 'requestChanges'])->name('requestChanges');
         Route::get('/{devis}/download', [ClientDevisController::class, 'download'])->name('download');
+        Route::post('/{devis}/negotiate', [NegotiationController::class, 'store'])->name('negotiate');
     });
 
     // Paiement
@@ -108,17 +112,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment/process/{invoiceId}', [PaymentController::class, 'processPayment'])->name('payment.process');
     Route::get('/bro', [PaymentController::class, 'paymentSuccess']);
 
-    // Factures
-    Route::prefix('invoices')->name('invoices.')->group(function () {
-        Route::get('/', [InvoiceController::class, 'index'])->name('index');
-        Route::get('/create/{projectID}', [InvoiceController::class, 'create'])->name('create');
-        Route::post('/', [InvoiceController::class, 'store'])->name('store');
-        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
-        Route::get('/{id}/download', [InvoiceController::class, 'download'])->name('download');
-        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
-        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
-        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
-    });
+    // Routes pour les factures
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
+    Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
+    Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'pdf'])->name('invoices.download');
 
     // Notifications
     Route::resource('notifications', NotificationController::class)->except(['edit', 'update']);
@@ -155,6 +157,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/projects', [ProjectController::class, 'index'])->name('client.projects');
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('client.request');
         Route::get('/invoices', [InvoiceController::class, 'index'])->name('client.invoices');
+        Route::get('/schedule', [ClientScheduleController::class, 'index'])->name('schedule');
     });
 
     // Routes Freelancer

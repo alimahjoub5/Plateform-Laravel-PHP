@@ -29,7 +29,7 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'Title' => 'required|string|max:255',
             'Description' => 'required|string',
-            'ClientID' => 'required|exists:users,id',
+            'ClientID' => 'required|exists:users,UserID',
             'Budget' => 'required|numeric',
             'Deadline' => 'required|date',
             'Status' => 'required|string',
@@ -74,7 +74,7 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'Title' => 'sometimes|string|max:255',
             'Description' => 'sometimes|string',
-            'ClientID' => 'sometimes|exists:users,id',
+            'ClientID' => 'sometimes|exists:users,UserID',
             'Budget' => 'sometimes|numeric',
             'Deadline' => 'sometimes|date',
             'Status' => 'sometimes|string',
@@ -175,7 +175,7 @@ class ProjectController extends Controller
         ]);
 
         // Ajouter des valeurs par défaut
-        $validatedData['ClientID'] = auth()->id(); // ID du client connecté
+        $validatedData['ClientID'] = auth()->user()->UserID; // ID du client connecté
         $validatedData['Status'] = 'Pending'; // Statut par défaut
         $validatedData['ApprovalStatus'] = 'Pending'; // Statut d'approbation par défaut
 
@@ -198,7 +198,7 @@ class ProjectController extends Controller
     public function clientServices()
     {
         // Récupérer l'ID du client connecté
-        $clientId = auth()->id();
+        $clientId = auth()->user()->UserID;
 
         // Récupérer les projets demandés par ce client
         $projects = Project::where('ClientID', $clientId)->get();
@@ -223,7 +223,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         // Vérifier que le projet appartient au client connecté
-        if ($project->ClientID !== auth()->id()) {
+        if ($project->ClientID !== auth()->user()->UserID) {
             return redirect()->route('client.services')->with('error', 'Vous n\'êtes pas autorisé à annuler ce projet.');
         }
 

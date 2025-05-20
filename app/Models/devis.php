@@ -46,5 +46,10 @@ class Devis extends Model
  {
      return $this->belongsTo(Project::class, 'ProjectID', 'ProjectID');
  }
+
+ public function negotiations()
+ {
+     return $this->hasMany(Negotiation::class, 'devis_id', 'DevisID')->orderBy('created_at', 'asc');
+ }
 }
 

@@ -6,125 +6,270 @@
     <style>
         @page {
             size: A4;
-            margin: 15mm;
+            margin: 20mm 15mm;
         }
         body {
-            font-family: 'Arial', sans-serif;
-            font-size: 9.5px;
+            font-family: 'Calibri', 'Arial', sans-serif;
+            font-size: 10pt;
             margin: 0;
             padding: 0;
-            color: #333;
+            color: #000;
+            line-height: 1.3;
         }
+
         .invoice-container {
             width: 100%;
             padding: 0;
         }
-        .invoice-header {
-            text-align: center;
-            margin-bottom: 15px;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2f5496;
+            padding-bottom: 15px;
         }
-        .invoice-header h1 {
-            font-size: 16px;
-            margin: 0;
+
+        .company-info {
+            text-align: left;
+            flex: 1;
         }
-        .invoice-header p {
-            font-size: 9px;
-            margin: 3px 0;
+
+        .company-logo {
+            max-width: 120px;
+            margin-bottom: 10px;
         }
-        .company-info, .rib-section {
-            font-size: 9px;
-            margin-bottom: 8px;
+
+        .company-name {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #2f5496;
+            margin-bottom: 5px;
         }
+
+        .company-details {
+            font-size: 9pt;
+            line-height: 1.4;
+        }
+
+        .invoice-info {
+            text-align: right;
+            flex: 1;
+        }
+
+        .invoice-title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #2f5496;
+            margin-bottom: 10px;
+        }
+
+        .invoice-details {
+            font-size: 9pt;
+        }
+
         .section {
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
-        .section h2 {
-            font-size: 11px;
-            margin-bottom: 6px;
-            border-bottom: 1px solid #ccc;
+
+        .section-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #2f5496;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #2f5496;
             padding-bottom: 3px;
         }
-        table {
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .info-table {
             width: 100%;
             border-collapse: collapse;
+            margin: 10px 0;
         }
-        th, td {
-            font-size: 9px;
-            padding: 5px;
-            border: 1px solid #ccc;
+
+        .info-table th, .info-table td {
+            padding: 6px;
+            border: 1px solid #ddd;
+            font-size: 9pt;
+        }
+
+        .info-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
             text-align: left;
         }
-        th {
-            background-color: #f2f2f2;
+
+        .amount-table {
+            width: 50%;
+            margin-left: auto;
+            border-collapse: collapse;
         }
-        .invoice-footer {
+
+        .amount-table th, .amount-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 10pt;
+        }
+
+        .amount-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .amount-table td:last-child {
+            text-align: right;
+        }
+
+        .amount-table tr:last-child td {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+
+        .payment-info {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+
+        .payment-info h3 {
+            font-size: 11pt;
+            color: #2f5496;
+            margin-bottom: 10px;
+        }
+
+        .payment-info p {
+            margin: 5px 0;
+            font-size: 9pt;
+        }
+
+        .footer {
             text-align: center;
-            font-size: 8.5px;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 8pt;
             color: #666;
-            margin-top: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .status.paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status.overdue {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        @media print {
+            body {
+                width: 210mm;
+                height: 297mm;
+            }
+            .section {
+                break-inside: avoid;
+            }
         }
     </style>
 </head>
 <body>
     <div class="invoice-container">
-
-        <!-- Infos entreprise -->
-        <div class="company-info">
-            <strong>Nom de l'entreprise</strong><br>
-            Rue de l'Entreprise, 1000 Tunis<br>
-            Email : contact@entreprise.tn — Tel : +216 20 000 000<br>
-            Matricule Fiscal : 1234567/A/M/000
+        <div class="header">
+            <div class="company-info">
+                <img src="{{ public_path('images/logo.png') }}" alt="Logo" class="company-logo">
+                <div class="company-name">{{ config('app.name') }}</div>
+                <div class="company-details">
+                    {{ $contactInfo->address ?? 'Adresse non spécifiée' }}<br>
+                    Téléphone: {{ $contactInfo->phone ?? 'Non spécifié' }}<br>
+                    Email: {{ $contactInfo->email ?? 'Non spécifié' }}<br>
+                    SIRET: {{ $contactInfo->siret ?? 'Non spécifié' }}
+                </div>
+            </div>
+            <div class="invoice-info">
+                <div class="invoice-title">FACTURE</div>
+                <div class="invoice-details">
+                    N° {{ $invoice->InvoiceID }}<br>
+                    Date: {{ \Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') }}<br>
+                    Échéance: {{ \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') }}
+                </div>
+            </div>
         </div>
 
-        <!-- En-tête -->
-        <div class="invoice-header">
-            <h1>Facture #{{ $invoice->InvoiceID }}</h1>
-            <p>Émise le : {{ \Carbon\Carbon::now()->format('d/m/Y') }}</p>
+        <div class="info-grid">
+            <div class="section">
+                <div class="section-title">Client</div>
+                <table class="info-table">
+                    <tr><th>Nom d'utilisateur</th><td>{{ $invoice->client->Username }}</td></tr>
+                    <tr><th>Prénom</th><td>{{ $invoice->client->FirstName }}</td></tr>
+                    <tr><th>Nom</th><td>{{ $invoice->client->LastName }}</td></tr>
+                    <tr><th>Email</th><td>{{ $invoice->client->Email }}</td></tr>
+                    <tr><th>Téléphone</th><td>{{ $invoice->client->PhoneNumber }}</td></tr>
+                    <tr><th>Adresse</th><td>{{ $invoice->client->Address }}</td></tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Projet</div>
+                <table class="info-table">
+                    <tr><th>Titre</th><td>{{ $invoice->project->Title }}</td></tr>
+                    <tr><th>Description</th><td>{{ $invoice->project->Description }}</td></tr>
+                    <tr><th>Budget</th><td>{{ number_format($invoice->project->Budget, 2, ',', ' ') }} €</td></tr>
+                </table>
+            </div>
         </div>
 
-        <!-- Infos facture -->
         <div class="section">
-            <h2>Informations de la facture</h2>
-            <table>
-                <tr><th>Montant TTC</th><td>{{ number_format($invoice->Amount, 2, ',', ' ') }} €</td></tr>
-                <tr><th>Date d'échéance</th><td>{{ \Carbon\Carbon::parse($invoice->DueDate)->format('d/m/Y') }}</td></tr>
-                <tr><th>Statut</th><td>{{ $invoice->Status }}</td></tr>
+            <div class="section-title">Détails de la facture</div>
+            <table class="amount-table">
+                <tr>
+                    <th>Montant HT</th>
+                    <td>{{ number_format($invoice->Amount / 1.2, 2, ',', ' ') }} €</td>
+                </tr>
+                <tr>
+                    <th>TVA (20%)</th>
+                    <td>{{ number_format($invoice->Amount - ($invoice->Amount / 1.2), 2, ',', ' ') }} €</td>
+                </tr>
+                <tr>
+                    <th>Total TTC</th>
+                    <td>{{ number_format($invoice->Amount, 2, ',', ' ') }} €</td>
+                </tr>
             </table>
         </div>
 
-        <!-- Description -->
+        @if($invoice->Description)
         <div class="section">
-            <h2>Description</h2>
-            <p>{{ $invoice->Description ?? 'Aucune description fournie.' }}</p>
+            <div class="section-title">Description</div>
+            <p>{{ $invoice->Description }}</p>
         </div>
+        @endif
 
-        <!-- Client -->
+        @if($invoice->payments->count() > 0)
         <div class="section">
-            <h2>Client</h2>
-            <table>
-                <tr><th>Nom d'utilisateur</th><td>{{ $invoice->client->Username }}</td></tr>
-                <tr><th>Prénom</th><td>{{ $invoice->client->FirstName }}</td></tr>
-                <tr><th>Nom</th><td>{{ $invoice->client->LastName }}</td></tr>
-                <tr><th>Email</th><td>{{ $invoice->client->Email }}</td></tr>
-                <tr><th>Téléphone</th><td>{{ $invoice->client->PhoneNumber }}</td></tr>
-                <tr><th>Adresse</th><td>{{ $invoice->client->Address }}</td></tr>
-            </table>
-        </div>
-
-        <!-- Projet -->
-        <div class="section">
-            <h2>Projet</h2>
-            <table>
-                <tr><th>Titre</th><td>{{ $invoice->project->Title }}</td></tr>
-                <tr><th>Description</th><td>{{ $invoice->project->Description }}</td></tr>
-                <tr><th>Budget</th><td>{{ number_format($invoice->project->Budget, 2, ',', ' ') }} €</td></tr>
-            </table>
-        </div>
-
-        <!-- Paiements -->
-        <div class="section">
-            <h2>Historique des paiements</h2>
-            <table>
+            <div class="section-title">Historique des paiements</div>
+            <table class="info-table">
                 <thead>
                     <tr>
                         <th>Méthode</th>
@@ -139,46 +284,33 @@
                             <td>{{ $payment->payment_method }}</td>
                             <td>{{ number_format($payment->amount, 2, ',', ' ') }} €</td>
                             <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('d/m/Y') }}</td>
-                            <td>{{ $payment->status }}</td>
+                            <td>
+                                <span class="status {{ strtolower($payment->status) }}">
+                                    {{ $payment->status }}
+                                </span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+        @endif
 
-        <!-- Message -->
-        <div class="section">
-            <h2>Message</h2>
-            <p>Merci pour votre confiance. Pour toute question, contactez-nous.</p>
+        <div class="payment-info">
+            <h3>Coordonnées de paiement</h3>
+            <p><strong>Virement bancaire :</strong><br>
+            Banque : Banque de Développement<br>
+            IBAN : TN59 1000 6035 0000 1234 5678<br>
+            BIC / SWIFT : BDTTNTTT</p>
+            <p><strong>PayPal :</strong><br>
+            paiement@entreprise.tn<br>
+            <em>(Merci d'indiquer le numéro de la facture dans la note du paiement)</em></p>
         </div>
 
-        <!-- RIB -->
-<!-- Coordonnées bancaires et PayPal -->
-<div class="rib-section">
-    <h2>Coordonnées de paiement</h2>
-    <table>
-        <tr>
-            <th style="width: 30%;">Par virement bancaire</th>
-            <td>
-                Banque : Banque de Développement<br>
-                IBAN : TN59 1000 6035 0000 1234 5678<br>
-                BIC / SWIFT : BDTTNTTT
-            </td>
-        </tr>
-        <tr>
-            <th>Par PayPal</th>
-            <td>
-                Adresse PayPal : paiement@entreprise.tn<br>
-                (Merci d'indiquer le numéro de la facture dans la note du paiement.)
-            </td>
-        </tr>
-    </table>
-</div>
-
-
-        <!-- Footer -->
-        <div class="invoice-footer">
-            &copy; {{ date('Y') }} Nom de l'entreprise — www.entreprise.tn
+        <div class="footer">
+            <p>{{ config('app.name') }} - {{ $contactInfo->address ?? 'Adresse non spécifiée' }}</p>
+            <p>Téléphone : {{ $contactInfo->phone ?? 'Non spécifié' }} | Email : {{ $contactInfo->email ?? 'Non spécifié' }}</p>
+            <p>SIRET : {{ $contactInfo->siret ?? 'Non spécifié' }}</p>
         </div>
     </div>
 </body>

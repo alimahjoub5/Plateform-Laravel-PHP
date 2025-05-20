@@ -10,7 +10,7 @@ class FreelancerMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->Role === 'Freelancer') {
+        if (auth()->check() && strtolower(auth()->user()->Role) === 'freelancer') {
             return $next($request);
         }
 
