@@ -1,17 +1,9 @@
-<?php
+
+
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Negotiation extends Model
-{
-    protected $fillable = [
-        'devis_id',
-        'message',
-        'sender_type',
-        'sender_id'
-    ];
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
     public function devis()
     {

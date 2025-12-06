@@ -13,7 +13,7 @@
     </head>
 <body class="bg-gray-100">
     <!-- Navbar -->
-    <nav class="bg-blue-600 shadow-lg fixed w-full z-50">
+    <nav class="bg-purple-600 shadow-lg fixed w-full z-50">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <!-- Logo -->
@@ -23,26 +23,26 @@
     
                 <!-- Liens de navigation -->
                 <div class="hidden md:flex items-center space-x-4">
-                    <a href="{{ route('default') }}#features" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Fonctionnalités</a>
-                    <a href="{{ route('default') }}#about" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">À propos</a>
+                    <a href="{{ route('default') }}#features" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">Fonctionnalités</a>
+                    <a href="{{ route('default') }}#about" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">À propos</a>
                     <!-- Lien vers la liste des blogs (accessible à tous) -->
-                    <a href="{{ route('blogs.index') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Blogs</a>
-                    <a href="{{ route('testimonials') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Témoignages</a>
-                    <a href="{{ route('portfolios.public') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Portfolios</a>
+                    <a href="{{ route('blogs.index') }}" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">Blogs</a>
+                    <a href="{{ route('testimonials') }}" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">Témoignages</a>
+                    <a href="{{ route('portfolios.public') }}" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">Portfolios</a>
     
                     <!-- Liens conditionnels -->
                     @auth
                         <!-- Lien "Application" pour les utilisateurs authentifiés -->
-                        <a href="{{ route('users.index') }}" class="bg-white text-blue-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Application</a>
+                        <a href="{{ route('users.index') }}" class="bg-white text-purple-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Application</a>
                         <!-- Lien "Mes Témoignages" pour les utilisateurs authentifiés -->
-                        <a href="{{ route('client.testimonials.index') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">
+                        <a href="{{ route('client.testimonials.index') }}" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">
                             <i class="fas fa-star mr-1"></i>Mes Témoignages
                         </a>
                     @else
                         <!-- Liens pour les utilisateurs non authentifiés -->
-                        <a href="{{ route('login') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Connexion</a>
-                        <a href="{{ route('register') }}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Inscription</a>
-                        <a href="{{ route('contact') }}" class="bg-white text-blue-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Contact</a>
+                        <a href="{{ route('login') }}" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">Connexion</a>
+                        <a href="{{ route('register') }}" class="text-white hover:bg-purple-700 px-3 py-2 rounded-md text-sm font-medium">Inscription</a>
+                        <a href="{{ route('contact') }}" class="bg-white text-purple-600 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Contact</a>
                     @endauth
                 </div>
             </div>
@@ -55,7 +55,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-blue-600 text-white mt-8">
+    <footer class="bg-purple-600 text-white mt-8">
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Section 1 : À propos -->
@@ -90,7 +90,7 @@
             </div>
 
             <!-- Copyright -->
-            <div class="border-t border-blue-500 mt-6 pt-6 text-center">
+            <div class="border-t border-purple-500 mt-6 pt-6 text-center">
                 <p class="text-sm">
                     &copy; {{ date('Y') }} Mon Application. Tous droits réservés.
                 </p>

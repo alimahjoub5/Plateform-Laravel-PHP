@@ -1,18 +1,11 @@
 <?php
 
+
+
 // app/Models/Portfolio.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Portfolio extends Model
-{
-    protected $primaryKey = 'PortfolioID';
-
-    protected $fillable = [
-        'ProjectID', 'Title', 'Description', 'ImageURL', 'LiveLink', 'Category', 'Tags'
-    ];
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
     // Relationships
     public function project()
     {

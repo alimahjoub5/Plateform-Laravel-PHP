@@ -1,18 +1,11 @@
 <?php
 
+
+
 // app/Models/TimeTracking.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class TimeTracking extends Model
-{
-    protected $table = 'time_tracking';
-    protected $primaryKey = 'TrackingID';
-
-    protected $fillable = [
-        'UserID',
-        'TaskID',
+use Illuminate\Database\Eloquent\Factories\HasFactory;
         'Description',
         'StartTime',
         'EndTime'

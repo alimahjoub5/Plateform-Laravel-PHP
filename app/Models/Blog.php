@@ -1,17 +1,9 @@
-<?php
+
+
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Blog extends Model
-{
-    protected $primaryKey = 'BlogID';
-
-    protected $fillable = [
-        'Title', 'Content', 'AuthorID', 'Category', 'FeaturedImage'
-    ];
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
     // Relation avec l'auteur
     public function author()
     {

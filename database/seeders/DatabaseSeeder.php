@@ -15,9 +15,33 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        if (!User::where('Email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'Username' => 'Test User',
+                'Email' => 'test@example.com',
+                'FirstName' => 'Test',
+                'LastName' => 'User',
+                'Role' => 'Admin',
+            ]);
+        }
+
+        $this->call([
+            AnalyticsSeeder::class,
+            BlogSeeder::class,
+            ChatMessageSeeder::class,
+            ContactInfoSeeder::class,
+            InvoiceSeeder::class,
+            MeetingSeeder::class,
+            NegotiationSeeder::class,
+            NotificationSeeder::class,
+            PaymentSeeder::class,
+            PortfolioSeeder::class,
+            ProjectSeeder::class,
+            ServiceSeeder::class,
+            TaskSeeder::class,
+            TestimonialSeeder::class,
+            TimeTrackingSeeder::class,
+            DevisSeeder::class,
         ]);
     }
 }

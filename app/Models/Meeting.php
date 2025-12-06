@@ -1,18 +1,3 @@
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-
-class Meeting extends Model
-{
-    protected $primaryKey = 'MeetingID';
-
-    protected $fillable = [
-        'ProjectID',
-        'OrganizerID',
-        'Title',
         'Description',
         'StartTime',
         'EndTime',

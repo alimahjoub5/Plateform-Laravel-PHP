@@ -1,17 +1,9 @@
 <?php
 
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Project extends Model
-{
-    // Définir la clé primaire
-    protected $primaryKey = 'ProjectID';
-
-    // Colonnes remplissables (mass assignable)
-    protected $fillable = [
-        'Title', 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
         'Description', 
         'ClientID', 
         'Budget', 
